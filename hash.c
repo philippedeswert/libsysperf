@@ -43,7 +43,7 @@
 
 typedef unsigned int  u32;
 typedef unsigned char u8;
-#include <linux/jhash.h>
+#include "jhash.h"
 
 unsigned hash_str(const char *str)
 {

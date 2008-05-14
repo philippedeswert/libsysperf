@@ -1,3 +1,11 @@
+libsysperf (0.2.0) unstable; urgency=low
+
+  * As jhash.h is no longer included in linux-kernel-headers, a copy has
+    been explicitly added to this package (its license is loose enough
+    to permit this). Fixes: NB#85383
+
+ -- Eero Tamminen <eero.tamminen@nokia.com>  Tue, 13 May 2008 17:38:46 +0300
+
 libsysperf (0.1.4) unstable; urgency=low
 
   * Use libc double conversion function, the ones in cvs_float.c

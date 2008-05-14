@@ -109,7 +109,7 @@
 
 #define u8  uint8_t
 #define u32 uint32_t
-#include <linux/jhash.h>
+#include "jhash.h"
 #undef  u8
 #undef  u32
 

@@ -84,7 +84,7 @@ void str_pool_delete(str_pool_t *self)
 
 typedef unsigned int  u32;
 typedef unsigned char u8;
-#include <linux/jhash.h>
+#include "jhash.h"
 
 const char *str_pool_add(str_pool_t *self, const char *text)
 {
