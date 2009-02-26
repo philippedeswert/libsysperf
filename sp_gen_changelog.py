@@ -33,6 +33,10 @@
 # (ie source) files.
 #
 # History
+# 25-Feb-2009 Simo Piiroinen
+# - asserts replaced with diagnostic messages
+# - allows dates in both "dd-mmm-yyyy" and "yyyy-mmm-dd" format
+#
 # 06-Jul-2005 Simo Piiroinen
 # - command line parser added
 #
@@ -131,7 +135,7 @@ def tool_usage():
 # ============================================================================
 
 msg_progname = TOOL_NAME
-msg_verbose  = 3
+msg_verbose  = 2
 
 def msg_emit(lev,tag,msg):
     if msg_verbose >= lev:
@@ -156,6 +160,9 @@ def msg_error(msg):
     
 def msg_warning(msg):
     msg_emit(2, msg_progname + ": Warning: ", msg)
+
+def msg_info(msg):
+    msg_emit(3, msg_progname + ": Info: ", msg)
     
 def msg_silent():
     global msg_verbose
@@ -184,8 +191,9 @@ for m in m_str: m_num[string.upper(m)] = len(m_num)
 def index_to_month(m):
     "Convert: 2 -> 'Feb'"
     
-    assert 1 <= m <= 12
-    return m_str[m]
+    if 1 <= m <= 12:
+        return m_str[m]
+    msg_fatal("Invalid month index: %s" % str(m))
 
 #----------------------------------------------------------------
 def month_to_index(m):
@@ -197,36 +205,31 @@ def month_to_index(m):
 
 #----------------------------------------------------------------
 def date_to_week(ymd):
-    assert 1900 <= ymd[0] <= 2100
-    assert    1 <= ymd[1] <= 12
-    assert    1 <= ymd[2] <= 31
-
-    y = ymd[0]
-    m = index_to_month(ymd[1])
+    
+    y,m,d = ymd
+    
+    if not (1900 <= y <= 2100):
+        msg_fatal("Invalid year: %s" % str(y))
+    if not (1 <= m <= 12):
+        msg_fatal("Invalid month: %s" % str(m))
+    if not (1 <= d <= 31):
+        msg_fatal("Invalid day of month: %s" % str(d))
+    
     # use ISO week number
     t = ymd + (12,) + (0,)*5
     t = time.mktime(t)
     
     l = time.localtime(t)
-    
-    
     w = time.strftime("%W", l)
     
     t -= l[6] * 24 * 60 * 60
     l = time.localtime(t)
-    #s = "%02d.%02d." % (l[1],l[2])
     s = "%02d.%02d." % (l[2],l[1])
     t += 6 * 24 * 60 * 60
     l = time.localtime(t)
-    #e = "%02d.%02d." % (l[1],l[2])
     e = "%02d.%02d." % (l[2],l[1])
-    
 
     return "%04d week %s (%s - %s)" % (y,w,s,e)
-    
-    return "%04d week %s (%s)" % (y,w,m)
-
-    #return "%04d %s (week %s)" % (y,m,w)
 
 
 #----------------------------------------------------------------
@@ -239,6 +242,9 @@ def get_date(s):
 	    d = int(s[0])
 	    y = int(s[2])
 	    m = month_to_index(s[1])
+            # allow '2004-Sep-12' too
+            if y <= 31 and d >= 1900:
+                y,d = d,y
 	    return (y,m,d)
 	except ValueError:
 	    pass
@@ -545,6 +551,7 @@ def main():
 
     entries = []
     for path in srce:
+        msg_info("reading: %s" % path)
 	parse_file(path, entries)
 
     combine(entries)
