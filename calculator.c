@@ -422,6 +422,7 @@ static char *calctok_repr(calctok_t *self, char *buff)
   return buff;
 }
 
+#ifdef DEAD_CODE
 static void calctok_emit(calctok_t *self)
 {
   if( self )
@@ -461,6 +462,7 @@ static void calctok_emit2(calctok_t *self, int tabout)
     tab();fprintf(stderr, "%*s%s\n", tabout, "", "NULL");
   }
 }
+#endif
 
 /* ========================================================================= *
  * struct calcstk_t methods
