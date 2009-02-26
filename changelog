@@ -1,5 +1,33 @@
 
 ==============================================================================
+2009 week 08 (23.02. - 01.03.)
+==============================================================================
+
+msg.h:
+    Simo Piiroinen
+        - added format attributes for logging functions so that gcc
+          can do type checking at call points
+
+sp_gen_changelog.py:
+    Simo Piiroinen
+        - asserts replaced with diagnostic messages
+        - allows dates in both "dd-mmm-yyyy" and "yyyy-mmm-dd" format
+
+sp_gen_manfile.py:
+    Simo Piiroinen
+        - fixed groff escaping
+        - source for title line (.TH) can be set at command line
+
+==============================================================================
+2007 week 37 (10.09. - 16.09.)
+==============================================================================
+
+csv_float.c:
+    Eero Tamminen
+        - use libc floating point functions ("#if 1"),
+          the ones here don't seem to work with Glibc v2.5
+
+==============================================================================
 2007 week 03 (15.01. - 21.01.)
 ==============================================================================
 
