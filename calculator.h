@@ -6,8 +6,8 @@
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,26 +19,26 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA
  *
- */ 
+ */
 
 /* ========================================================================= *
  * File: calculator.h  --  simple infix calculator with external symtab
- * 
+ *
  * Author: Simo Piiroinen
- * 
+ *
  * -------------------------------------------------------------------------
- * 
+ *
  * History:
- * 
+ *
  * 25-Sep-2006 Simo Piiroinen
  * - added '?' operator (COL=="")?(COL="XYZ")
  * - short-cut evaluation for '&&' and '||'
  * - uses csvcell_t for holding values
  * - code cleanup
- * 
+ *
  * 28-Jun-2005 Simo Piiroinen
  * - imported from track2
- * 
+ *
  * 10-Jan-2005 Simo Piiroinen
  * - supports string variables too
  *
@@ -56,7 +56,6 @@ extern "C" {
 #elif 0
 } /* fool JED indentation ... */
 #endif
-
 
 /* ========================================================================= *
  * typedefs & constants
@@ -101,12 +100,12 @@ enum
 struct calctok_t
 {
   int        tok_code; /* tc_xxx */
-  calctok_t *tok_arg1; /* operator */         
+  calctok_t *tok_arg1; /* operator */
   calctok_t *tok_arg2; /* operator or unary */
   csvcell_t  tok_val;  /* token value */
   csvcell_t  tok_sym;  /* token symbol */
   int        tok_col;  /* column for symbol */
-  
+
 };
 
 /* ------------------------------------------------------------------------- *
@@ -129,18 +128,18 @@ struct calcstk_t
   int stk_size;  /* slots allocated */
 
   int stk_fifo;  /* fifo == 1 allows:
-		  *   calcstk_next()
-		  *   calcstk_peek()
-		  *   calcstk_new()
-		  *
-		  *   and calcstk_clear() deletes tokens contained
-		  *   as implicitly does calcstk_dtor() too...
-		  *
-		  * fifo == 0 allows:
-		  *   calcstk_top()
-		  *   calcstk_pop()
-		  *   calcstk_push()
-		  */
+                  *   calcstk_next()
+                  *   calcstk_peek()
+                  *   calcstk_new()
+                  *
+                  *   and calcstk_clear() deletes tokens contained
+                  *   as implicitly does calcstk_dtor() too...
+                  *
+                  * fifo == 0 allows:
+                  *   calcstk_top()
+                  *   calcstk_pop()
+                  *   calcstk_push()
+                  */
 
   calctok_t **stk_data;
 };
@@ -155,10 +154,10 @@ struct calc_t
 
   char     *calc_expr; /* original text */
   calcstk_t calc_fifo; /* tokenized text: all tokens are kept here in
-			* parse order - which allows reconstruction of
-			* error messages where offending token can
-			* be identified
-			*/
+                        * parse order - which allows reconstruction of
+                        * error messages where offending token can
+                        * be identified
+                        */
 
   /* parse state: after calc_syntax_tree() vstk should contain
    *              only root token from which to evaluate value
@@ -179,7 +178,6 @@ struct calc_t
   void    *calc_userdata; /* data to pass to above hooks */
 };
 
-
 /* ------------------------------------------------------------------------- *
  * api functions
  * ------------------------------------------------------------------------- */
@@ -193,7 +191,6 @@ double calc_evaluate(calc_t *self);
 double calc_compile_and_evaluate(calc_t *self, const char *expr);
 
 const char *calctok_getsymbol(const calctok_t *self);
-
 
 #ifdef __cplusplus
 };

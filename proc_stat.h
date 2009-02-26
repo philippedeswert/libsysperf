@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,13 +23,13 @@
 
 /* ========================================================================= *
  * File: proc_stat.h
- * 
+ *
  * Author: Simo Piiroinen
- * 
+ *
  * -------------------------------------------------------------------------
- * 
+ *
  * History:
- * 
+ *
  * 31-May-2006 Simo Piiroinen
  * - copied from track2 source tree
  * ========================================================================= */

@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,51 +19,51 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA
  *
- */ 
+ */
 
 /* ========================================================================= *
  * File: calculator.c  --  simple infix calculator with external symtab
- * 
+ *
  * Author: Simo Piiroinen
- * 
+ *
  * -------------------------------------------------------------------------
- * 
+ *
  * History:
- * 
+ *
  * 18-Jan-2007 Simo Piiroinen
  * - special case for division by zero
- * 
+ *
  * 25-Sep-2006 Simo Piiroinen
  * - added c-style '?:' operators: L=(val<10)?"LO":"HI"
  * - added '#' operator (COL=="")#(COL="XYZ")
  * - short-cut evaluation for '&&' and '||'
  * - uses csvcell_t for holding values
  * - code cleanup
- * 
+ *
  * 31-Aug-2006 Simo Piiroinen
  * - fix: some diagnostics went to stdout instead of stderr
  *
  * 14-Sep-2005 Simo Piiroinen
  * - commented out dead code
- * 
+ *
  * 14-Jul-2005 Simo Piiroinen
- * - TESTMAIN supports string variables 
- * 
+ * - TESTMAIN supports string variables
+ *
  * 28-Jun-2005 Simo Piiroinen
  * - imported from track2
- * 
+ *
  * 10-Jan-2005 Simo Piiroinen
  * - supports string variables too
  * - debug messages now written to stderr
- * 
+ *
  * 07-Jan-2005 Simo Piiroinen
  * - added '&&' and '||' operators
  * - string values allowed too
  * - string equality check supports 'str' == 'pat[,pat]...' lists
- * 
+ *
  * 26-Nov-2004 Simo Piiroinen
  * - now allows underscores in symbols
- * 
+ *
  * 26-Aug-2004 Simo Piiroinen
  * - first version
  * ========================================================================= */
@@ -91,8 +91,6 @@
 // {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 // {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 // {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
-
-
 
 // }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 // }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
@@ -158,7 +156,6 @@ static void emit(const char *fmt, ...)
 #define tab() do{}while(0)
 #endif
 
-
 /* ========================================================================= *
  * module data
  * ========================================================================= */
@@ -194,7 +191,6 @@ void calcop_list(void)
   }
 }
 #endif
-
 
 /* ------------------------------------------------------------------------- *
  * error handling: currently done wial longjmp, and thus is not thread safe
@@ -410,7 +406,7 @@ static char *calctok_repr(calctok_t *self, char *buff)
       sprintf(buff, "'%s'", calctok_getstring(self));
     }
     break;
-    
+
   case tc_var:
     sprintf(buff, "$%s", calctok_getsymbol(self));
     break;
@@ -450,7 +446,7 @@ static void calctok_emit2(calctok_t *self, int tabout)
   {
     char t[64];
     tab();fprintf(stderr, "%*s%s\n", tabout, "", calctok_repr(self, t));
-    
+
     if( self->tok_arg1 || self->tok_arg2 )
     {
       calctok_emit2(self->tok_arg1, tabout+8);
@@ -545,8 +541,8 @@ static calctok_t *calcstk_new(calcstk_t *self)
   if( self->stk_tail == self->stk_size )
   {
     self->stk_size *= 2;
-    self->stk_data = realloc(self->stk_data, 
-			     self->stk_size * sizeof *self->stk_data);
+    self->stk_data = realloc(self->stk_data,
+                             self->stk_size * sizeof *self->stk_data);
   }
 
   calctok_t *tok = calctok_create();
@@ -599,12 +595,11 @@ static void calcstk_push(calcstk_t *self, calctok_t *tok)
   if( self->stk_tail == self->stk_size )
   {
     self->stk_size *= 2;
-    self->stk_data = realloc(self->stk_data, 
-			     self->stk_size * sizeof *self->stk_data);
+    self->stk_data = realloc(self->stk_data,
+                             self->stk_size * sizeof *self->stk_data);
   }
   self->stk_data[self->stk_tail++] = tok;
 }
-
 
 /* ========================================================================= *
  * struct calc_t methods
@@ -623,11 +618,11 @@ static calctok_t *calc_root(calc_t *self)
  * calc_getenv
  * ------------------------------------------------------------------------- */
 
-static void 
+static void
 calc_getenv(calc_t *self, void *user, calctok_t *tok)
 {
   char *s;
-  
+
   if( (s = getenv(tok->tok_sym.cc_string)) != 0 )
   {
     csvcell_setauto(&tok->tok_val, s);
@@ -646,13 +641,13 @@ calc_getenv(calc_t *self, void *user, calctok_t *tok)
  * calc_setenv
  * ------------------------------------------------------------------------- */
 
-static void 
+static void
 calc_setenv(calc_t *self, void *user, calctok_t *tok)
 {
   char tmp[32];
   const char *val = csvcell_getstring(&tok->tok_val, tmp, sizeof tmp);
   setenv(tok->tok_sym.cc_string, val, 1);
-  
+
   fprintf(stderr, "SETENV '%s' '%s'\n", tok->tok_sym.cc_string, val);
 }
 
@@ -804,36 +799,36 @@ static void calc_consume_eval(calc_t *self)
     {
       assert( o != 0 );
       assert( o->tok_code == tc_op1 || o->tok_code == tc_op2 );
-      
+
       if( o->tok_code == tc_op1 )
       {
-	fprintf(stderr, "POP\n");
-	assert( n > 0 );
-	t = s[--n];
-	
-// QUARANTINE 	tab();fprintf(stderr, "T: ");calctok_emit(t);fprintf(stderr, "\n");
-	
-	assert( t->tok_arg1 == 0);
-	assert( t->tok_arg2 != 0);
-	t->tok_arg1 = calc_vpop(self);
+        fprintf(stderr, "POP\n");
+        assert( n > 0 );
+        t = s[--n];
 
-	assert( o->tok_arg1 == 0);
-	assert( o->tok_arg2 == 0);
-	o->tok_arg1 = calc_vpop(self);
-	o->tok_arg2 = t;
-	calc_vpush(self, o);
-	if( n == 0 ){
-// QUARANTINE 	  calctok_emit2(o, 0);
-	  break;
-	}
+// QUARANTINE   tab();fprintf(stderr, "T: ");calctok_emit(t);fprintf(stderr, "\n");
+
+        assert( t->tok_arg1 == 0);
+        assert( t->tok_arg2 != 0);
+        t->tok_arg1 = calc_vpop(self);
+
+        assert( o->tok_arg1 == 0);
+        assert( o->tok_arg2 == 0);
+        o->tok_arg1 = calc_vpop(self);
+        o->tok_arg2 = t;
+        calc_vpush(self, o);
+        if( n == 0 ){
+// QUARANTINE     calctok_emit2(o, 0);
+          break;
+        }
       }
       else
       {
-	fprintf(stderr, "PUSH\n");
-	assert( o->tok_arg1 == 0);
-	assert( o->tok_arg2 == 0);
-	o->tok_arg2 = calc_vpop(self);
-	s[n++] = o;
+        fprintf(stderr, "PUSH\n");
+        assert( o->tok_arg1 == 0);
+        assert( o->tok_arg2 == 0);
+        o->tok_arg2 = calc_vpop(self);
+        s[n++] = o;
       }
       o = calc_opop(self);
       assert( o != 0 );
@@ -848,49 +843,49 @@ static void calc_consume_eval(calc_t *self)
     {
       assert( o != 0 );
       assert( o->tok_code == tc_op1 || o->tok_code == tc_op2 );
-      
+
       if( o->tok_code == tc_op1 )
       {
-	// POP
-	assert( s != 0 );
-	t = s, s = t->tok_arg1, t->tok_arg1 = 0;
-	
-	//tab();fprintf(stderr, "T: ");calctok_emit(t);fprintf(stderr, "\n");
-	
-	assert( t->tok_arg1 == 0);
-	assert( t->tok_arg2 != 0);
-	t->tok_arg1 = calc_vpop(self);
-	
-	assert( o->tok_arg1 == 0);
-	assert( o->tok_arg2 == 0);
-	o->tok_arg1 = calc_vpop(self);
-	o->tok_arg2 = t;
-	calc_vpush(self, o);
-	if( s == 0 ) 
-	{
-	  //calctok_emit2(o, 0);
-	  break;
-	}
+        // POP
+        assert( s != 0 );
+        t = s, s = t->tok_arg1, t->tok_arg1 = 0;
+
+        //tab();fprintf(stderr, "T: ");calctok_emit(t);fprintf(stderr, "\n");
+
+        assert( t->tok_arg1 == 0);
+        assert( t->tok_arg2 != 0);
+        t->tok_arg1 = calc_vpop(self);
+
+        assert( o->tok_arg1 == 0);
+        assert( o->tok_arg2 == 0);
+        o->tok_arg1 = calc_vpop(self);
+        o->tok_arg2 = t;
+        calc_vpush(self, o);
+        if( s == 0 )
+        {
+          //calctok_emit2(o, 0);
+          break;
+        }
       }
       else
       {
-	assert( o->tok_arg1 == 0);
-	assert( o->tok_arg2 == 0);
-	o->tok_arg2 = calc_vpop(self);
-	
-	// PUSH
-	o->tok_arg1 = s, s = o;
+        assert( o->tok_arg1 == 0);
+        assert( o->tok_arg2 == 0);
+        o->tok_arg2 = calc_vpop(self);
+
+        // PUSH
+        o->tok_arg1 = s, s = o;
       }
       o = calc_opop(self);
       assert( o != 0 );
     }
-#endif    
+#endif
   }
   else if( calctok_isoperator(o) )
   {
     assert( o->tok_arg2 == 0 );
     assert( o->tok_arg1 == 0 );
-    
+
     o->tok_arg2 = calc_vpop(self);
     o->tok_arg1 = calc_vpop(self);
     calc_vpush(self, o);
@@ -971,26 +966,26 @@ static int calc_expect_op(calc_t *self)
       HERE
       for( ;; )
       {
-	if( (o = calc_otop(self)) == 0 )
-	{
-	  syntax_error(t);
-	}
-	if( o->tok_code == tc_par )
-	{
-	  calc_opop(self);
-	  break;
-	}
+        if( (o = calc_otop(self)) == 0 )
+        {
+          syntax_error(t);
+        }
+        if( o->tok_code == tc_par )
+        {
+          calc_opop(self);
+          break;
+        }
         calc_consume_eval(self);
       }
 
       ok = calc_expect_op(self);
-      
+
 // QUARANTINE       while( (o = calc_otop(self)) != 0 && o->tok_code != tc_par )
 // QUARANTINE       {
 // QUARANTINE         HERE
 // QUARANTINE         calc_consume_eval(self);
 // QUARANTINE       }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE       if( (o = calc_otop(self)) != 0 && o->tok_code == tc_par )
 // QUARANTINE       {
 // QUARANTINE         calc_opop(self);
@@ -1046,7 +1041,6 @@ static int calc_tokenize_expression(calc_t *self, const char *text)
       continue;
     }
 
-
     calctok_t *t = calc_add_token(self);
 
     if( c == '"' || c == '\'' )
@@ -1055,17 +1049,16 @@ static int calc_tokenize_expression(calc_t *self, const char *text)
        * literal string in quotes
        * - - - - - - - - - - - - - - - - - - - */
 
-      
       // skip initial quote char
       beg = end;
-      
+
       // find end of quote
       if( (end = strchr(end, c)) == 0 )
       {
-	ok = 0; break;
+        ok = 0; break;
       }
       *end++ = 0;
-      
+
       t->tok_code = tc_lit;
       csvcell_setstring(&t->tok_val, beg);
 // QUARANTINE       fprintf(stderr, "TOK <- str '%s'\n", beg);
@@ -1079,8 +1072,8 @@ static int calc_tokenize_expression(calc_t *self, const char *text)
       t->tok_code = tc_lit;
       csvcell_setnumber(&t->tok_val, strtod(beg,&end));
 
-// QUARANTINE       fprintf(stderr, "TOK <- num '%.*s' %g\n", 
-// QUARANTINE 	      (int)(end-beg), beg, t->tok_val.cc_number);
+// QUARANTINE       fprintf(stderr, "TOK <- num '%.*s' %g\n",
+// QUARANTINE         (int)(end-beg), beg, t->tok_val.cc_number);
     }
     else if( issymbeg(c) )
     {
@@ -1088,15 +1081,14 @@ static int calc_tokenize_expression(calc_t *self, const char *text)
        * symbol name
        * - - - - - - - - - - - - - - - - - - - */
 
-      
       while( issymbol(*end) ) { ++end; }
 
       t->tok_code = tc_var;
       c = *end, *end = 0;
       csvcell_setstring(&t->tok_sym, beg);
 
-// QUARANTINE       fprintf(stderr, "TOK <- var '%.*s'\n", 
-// QUARANTINE 	      (int)(end-beg), beg);
+// QUARANTINE       fprintf(stderr, "TOK <- var '%.*s'\n",
+// QUARANTINE         (int)(end-beg), beg);
       *end = c;
     }
     else
@@ -1122,8 +1114,8 @@ static int calc_tokenize_expression(calc_t *self, const char *text)
       }
       end = beg + best;
 
-// QUARANTINE       fprintf(stderr, "TOK <- op '%.*s'\n", 
-// QUARANTINE 	      (int)(end-beg), beg);
+// QUARANTINE       fprintf(stderr, "TOK <- op '%.*s'\n",
+// QUARANTINE         (int)(end-beg), beg);
     }
   }
 
@@ -1194,29 +1186,29 @@ static csvcell_t *calc_evalsub(calc_t *self, calctok_t *root)
   {
     return cell->cc_number;
   }
-  
+
   auto int istrue(const csvcell_t *cell)
   {
     return fabs(cell->cc_number) > EPSILON;
   }
-  
+
   auto csvcell_t *a1(void) { return calc_evalsub(self, root->tok_arg1); }
   auto csvcell_t *a2(void) { return calc_evalsub(self, root->tok_arg2); }
   auto int        b1(void) { return istrue(a1()); }
   auto int        b2(void) { return istrue(a2()); }
   auto double     v1(void) { return value(a1()); }
   auto double     v2(void) { return value(a2()); }
-  
+
   csvcell_t *res = &root->tok_val;
-  
+
   ENTER
-  
+
   switch( root->tok_code )
   {
   case tc_and:
     csvcell_setnumber(res, b1() && b2());
     break;
-  case tc_or: 
+  case tc_or:
     csvcell_setnumber(res, b1() || b2());
     break;
 
@@ -1233,7 +1225,7 @@ static csvcell_t *calc_evalsub(calc_t *self, calctok_t *root)
 
   case tc_op2:
     abort();
-    
+
   case tc_op1:
     assert( root->tok_arg2->tok_code == tc_op2 );
     if( b1() )
@@ -1245,7 +1237,7 @@ static csvcell_t *calc_evalsub(calc_t *self, calctok_t *root)
       *res = *calc_evalsub(self, root->tok_arg2->tok_arg2);
     }
     break;
-    
+
   case tc_add:
     csvcell_setnumber(res, v1() + v2());
     break;
@@ -1261,15 +1253,14 @@ static csvcell_t *calc_evalsub(calc_t *self, calctok_t *root)
       double d = v2();
       if( fabs(d) > DBL_MIN )
       {
-	csvcell_setnumber(res, v1() / d);
+        csvcell_setnumber(res, v1() / d);
       }
       else
       {
-	csvcell_setstring(res, "DIV0");
+        csvcell_setstring(res, "DIV0");
       }
     }
     break;
-    
 
   case tc_eq:
     csvcell_setnumber(res, csvcell_compare(a1(), a2()) == 0);
@@ -1300,7 +1291,7 @@ static csvcell_t *calc_evalsub(calc_t *self, calctok_t *root)
   case tc_not:
     csvcell_setnumber(res, !b2());
     break;
-    
+
   case tc_neg:
     csvcell_setnumber(res, -v2());
     break;
@@ -1318,7 +1309,7 @@ static csvcell_t *calc_evalsub(calc_t *self, calctok_t *root)
       self->calc_getvar(self, self->calc_userdata, root);
     }
     break;
-    
+
   case tc_set:
     if( root->tok_arg1->tok_sym.cc_string == 0 )
     {
@@ -1331,7 +1322,7 @@ static csvcell_t *calc_evalsub(calc_t *self, calctok_t *root)
     }
     break;
 
-  default: 
+  default:
     assert(0);
     abort();
   }
@@ -1354,7 +1345,6 @@ void calc_clear(calc_t *self)
   calcstk_clear(&self->calc_fifo);
 }
 
-
 /* ------------------------------------------------------------------------- *
  * calc_create
  * ------------------------------------------------------------------------- */
@@ -1372,7 +1362,7 @@ calc_t *calc_create(void)
   self->calc_userdata = 0;
   self->calc_getvar = calc_getenv;
   self->calc_setvar = calc_setenv;
-  
+
   return self;
 }
 
@@ -1440,7 +1430,6 @@ double calc_compile_and_evaluate(calc_t *self, const char *expr)
   return 0.0;
 }
 
-
 /* ========================================================================= *
  * test main
  * ========================================================================= */
@@ -1504,12 +1493,12 @@ int main(int ac, char **av)
       calctok_t *root = calc_root(c);
 // QUARANTINE       if( root != 0 )
 // QUARANTINE       {
-// QUARANTINE 	fprintf(stderr, "infix:  "); infix(root); fprintf(stderr, "\n");
-// QUARANTINE 	fprintf(stderr, "prefix: "); prefix(root); fprintf(stderr, "\n");
-// QUARANTINE 	fprintf(stderr, "postfix:"); postfix(root); fprintf(stderr, "\n");
+// QUARANTINE   fprintf(stderr, "infix:  "); infix(root); fprintf(stderr, "\n");
+// QUARANTINE   fprintf(stderr, "prefix: "); prefix(root); fprintf(stderr, "\n");
+// QUARANTINE   fprintf(stderr, "postfix:"); postfix(root); fprintf(stderr, "\n");
 // QUARANTINE       }
       calctok_emit2(root, 0);
-      
+
       double r = calc_evaluate(c);
       fprintf(stderr, "%s = %g\n", e, r);
     }

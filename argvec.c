@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA
  *
- */ 
+ */
 
 /* ========================================================================= *
  * File: argvec.c
@@ -56,20 +56,20 @@ int argvec_done(argvec_t *self)
  * ------------------------------------------------------------------------- */
 
 argvec_t *argvec_create(int argc, char **argv,
-			const option_t *opt,
-			const manual_t *man)
+                        const option_t *opt,
+                        const manual_t *man)
 {
   argvec_t *self = calloc(1, sizeof *self);
-  
+
   self->av_argc = argc;
   self->av_argv = argv;
   self->av_iarg = 1;
   self->av_ichr = 0;
   self->av_done = 0;
-  
+
   self->av_opt  = opt;
   self->av_man  = man;
-  
+
   return self;
 }
 
@@ -94,7 +94,7 @@ argvec_options(argvec_t *self, int verbose)
   const char *s;
 
   const option_t *spec = self->av_opt;
-  
+
   for( ; spec->op_tag >= 0; ++spec )
   {
     int i = 0;
@@ -128,20 +128,20 @@ argvec_options(argvec_t *self, int verbose)
       const char *beg = spec->op_usage;
       const char *pos = spec->op_usage;
       int         ind = strspn(beg, " \t");
-      
+
       while( *pos != 0 )
       {
-	int len = strcspn(pos, "\n");
-	
-	if( len > 0 )
-	{
-	  fputc('\t', stdout);
-	  fwrite(beg, ind, 1, stdout);
-	  fwrite(pos, len, 1, stdout);
-	}
-	printf("\n");
-	pos += len;
-	if( *pos ) ++pos;
+        int len = strcspn(pos, "\n");
+
+        if( len > 0 )
+        {
+          fputc('\t', stdout);
+          fwrite(beg, ind, 1, stdout);
+          fwrite(pos, len, 1, stdout);
+        }
+        printf("\n");
+        pos += len;
+        if( *pos ) ++pos;
       }
     }
   }
@@ -154,7 +154,7 @@ argvec_options(argvec_t *self, int verbose)
 void argvec_usage(argvec_t *self)
 {
   const manual_t *man = self->av_man;
-  
+
   if( man == 0 )
   {
     argvec_options(self, 1);
@@ -162,17 +162,17 @@ void argvec_usage(argvec_t *self)
   else for( ; man->man_sect; ++man )
   {
     printf("%s\n", man->man_sect);
-    
+
     if( man->man_text )
     {
       const char *s = man->man_text;
       for( ;; )
       {
-	int n = strcspn(s,"\n");
-	printf("  %.*s\n", n, s);
-	s += n;
-	if( *s != 0 ) ++s;
-	if( *s == 0 ) break;
+        int n = strcspn(s,"\n");
+        printf("  %.*s\n", n, s);
+        s += n;
+        if( *s != 0 ) ++s;
+        if( *s == 0 ) break;
       }
     }
     else
@@ -211,52 +211,52 @@ argvec_next(argvec_t *self, int *ptag, char **pstr)
   /* - - - - - - - - - - - - - - - - - - - *
    * all done
    * - - - - - - - - - - - - - - - - - - - */
-  
+
   if( self->av_iarg >= self->av_argc )
   {
     self->av_done = 1;
     return 0;
   }
-  
+
   pos = &self->av_argv[self->av_iarg][self->av_ichr];
-  
+
   /* - - - - - - - - - - - - - - - - - - - *
    * at the start of new argument?
    * - - - - - - - - - - - - - - - - - - - */
-  
+
   if( self->av_ichr == 0 )
   {
     /* - - - - - - - - - - - - - - - - - - - *
      * just "-" or non-switch argument ?
      * - - - - - - - - - - - - - - - - - - - */
-    
+
     if( pos[0] != '-' || pos[1] == 0 )
     {
       *ptag = -1, *pstr = pos;
       self->av_iarg += 1, self->av_ichr = 0;
       return 1;
     }
-    
+
     /* - - - - - - - - - - - - - - - - - - - *
      * "--<option>[=<value>] argument ?
      * - - - - - - - - - - - - - - - - - - - */
-    
+
     if( pos[1] == '-' )
     {
       pos += 2; // skip the initial '--'
-      
+
       if( (val = strchr(pos, '=')) != 0 )
       {
         *val++ = 0;
       }
-      
+
       for( ; spec->op_tag >= 0; ++spec )
       {
         if( spec->op_long && !strcmp(pos, spec->op_long) )
         {
           *ptag = spec->op_tag;
           *pstr = val;
-	  
+
           if( spec->op_param && !val && *spec->op_param != '[' )
           {
             // ERR: required value for option is missing
@@ -264,15 +264,15 @@ argvec_next(argvec_t *self, int *ptag, char **pstr)
                     spec->op_long, spec->op_param);
             return 0;
           }
-	  
-	  if( !spec->op_param && val )
-	  {
+
+          if( !spec->op_param && val )
+          {
             // ERR: unneeded value for option
             msg_error("--%s does not take an argument\n",
                     spec->op_long);
             return 0;
-	  }
-	  
+          }
+
           // OK: long option [with value]
           self->av_iarg += 1, self->av_ichr = 0;
           return 1;
@@ -282,14 +282,14 @@ argvec_next(argvec_t *self, int *ptag, char **pstr)
       msg_error("unknown switch --%s\n", pos);
       return 0;
     }
-    
+
     /* - - - - - - - - - - - - - - - - - - - *
      * set of single char switches
      * - - - - - - - - - - - - - - - - - - - */
-    
+
     pos += 1; // skip the initial '-'
   }
-  
+
   // -<optionchar>
   // -<optionchar><optionvalue>
   // -<optionchar> <optionvalue>
@@ -300,16 +300,16 @@ argvec_next(argvec_t *self, int *ptag, char **pstr)
     {
       // update charpos -> past this switch
       self->av_ichr = ++pos - self->av_argv[self->av_iarg];
-      
+
       // assume switch without option
       *ptag = spec->op_tag;
       *pstr = 0;
-      
+
       if( spec->op_param )
       {
-	// next time start from next argv position
+        // next time start from next argv position
         self->av_iarg += 1, self->av_ichr = 0;
-	
+
         if( *pos != 0 )
         {
           // rest of the argument used as option value
@@ -342,9 +342,8 @@ argvec_next(argvec_t *self, int *ptag, char **pstr)
       return 1;
     }
   }
-  
+
   msg_error("unknown switch -%c (0x%02x)\n",
           *pos, (unsigned char)*pos);
   return 0;
 }
-

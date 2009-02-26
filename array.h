@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,23 +19,23 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA
  *
- */ 
+ */
 
 /* ========================================================================= *
  * File: array.h
- * 
+ *
  * Author: Simo Piiroinen
- * 
+ *
  * -------------------------------------------------------------------------
- * 
+ *
  * History:
- * 
+ *
  * 18-Jan-2007 Simo Piiroinen
  * - NULL item destructor redirected to dummy
- * 
+ *
  * 22-Sep-2005 Simo Piiroinen
  * - added array_size()
- * 
+ *
  * 28-Jun-2005 Simo Piiroinen
  * - imported from track2
  *
@@ -67,7 +67,7 @@ static inline int array_size(const array_t *self)
   {
     return self->size;
   }
-  
+
 static inline int array_empty(const array_t *self)
   {
     return self->size == 0;
@@ -101,7 +101,7 @@ void *array_pop(array_t *arr);
 void array_final(array_t *arr);
 
 static inline void array_dummy_delete(void *ptr) { }
-  
+
 static inline void array_ctor_nc(array_t *self, array_delete_fn del)
 {
   self->del   = del ? del : array_dummy_delete;
@@ -146,7 +146,6 @@ static inline void array_set(array_t *arr, size_t i, void *data)
   }
 }
 
-
 static inline void array_del_nocompact(array_t *arr, size_t i)
 {
   if( i < arr->size )
@@ -166,7 +165,6 @@ static inline void *array_rem_nocompact(array_t *arr, size_t i)
   }
   return item;
 }
-
 
 static inline size_t array_compact(array_t *arr)
 {

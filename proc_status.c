@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,17 +23,17 @@
 
 /* ========================================================================= *
  * File: proc_status.c
- * 
+ *
  * Author: Simo Piiroinen
- * 
+ *
  * History:
- * 
+ *
  * 21-Sep-2006 Simo Piiroinen
  * - fixed include paths
  *
  * 30-May-2006 Simo Piiroinen
  * - moved from track2 source tree
- * 
+ *
  * 15-Dec-2004 Simo Piiroinen
  * - added Name, Pid and PPid parsing
  * ========================================================================= */
@@ -80,19 +80,19 @@ proc_status_update(proc_status_t *self, char *data)
   while( *data )
   {
     key = cstring_split_at_char(data, &data, '\n');
-    
+
     if( strchr("VNP", *key) == 0 ) continue;
-    
+
     //if( key[0] != 'V' || key[1] != 'm' ) continue;
 
     cstring_split_at_char(key, &val, ':');
 
 #define Xu(v) if( !strcmp(key, #v) )\
   { self->v = strtoul(val,0,0); } else
-    
+
 #define Xs(v) if( !strcmp(key, #v) ) \
   { snprintf(self->v,sizeof self->v, "%s", cstring_strip(val)); } else
-    
+
     Xs(Name);
     Xu(Pid);
     Xu(PPid);
@@ -104,16 +104,16 @@ proc_status_update(proc_status_t *self, char *data)
     Xu(VmExe)
     Xu(VmLib)
     { }
-    
+
 #undef Xu
 #undef Xs
   }
-  
+
   for( char *s = self->Name; *s; ++s )
   {
     switch( *s )
     {
-    case '/': 
+    case '/':
     case '[': case ']':
     case '(': case ')':
     case '{': case '}':

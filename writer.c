@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -80,7 +80,7 @@ void writer_detach(writer_t *self)
     close(self->wr_file);
     self->wr_file = -1;
   }
-  
+
   if( self->wr_path != 0 )
   {
     free(self->wr_path);
@@ -97,10 +97,10 @@ int writer_attach(writer_t *self, const char *path)
 // QUARANTINE   msg_debug("%s: %s\n", __FUNCTION__, self->wr_path);
 
   int err = -1;
-  
+
   writer_detach(self);
   self->wr_path = strdup(path ? path : "<stdout>");
-  
+
   if( path == 0 )
   {
     self->wr_file = STDOUT_FILENO;
@@ -113,13 +113,13 @@ int writer_attach(writer_t *self, const char *path)
       goto cleanup;
     }
   }
-  
+
   err = 0;
-  
+
   cleanup:
-  
+
 // QUARANTINE   msg_debug("%s: %s -> %d\n", __FUNCTION__, self->wr_path, err);
- 
+
   return err;
 }
 

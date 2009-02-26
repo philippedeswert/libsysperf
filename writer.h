@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -70,7 +70,6 @@ int writer_attach(writer_t *self, const char *path);
 writer_t *writer_create(void);
 void writer_delete(writer_t *self);
 
-
 /* ------------------------------------------------------------------------- *
  * writer_ctor
  * ------------------------------------------------------------------------- */
@@ -79,7 +78,7 @@ static inline void writer_ctor(writer_t *self)
 {
   size_t size = 256 << 10;
   char  *addr = malloc(size);
-  
+
   self->wr_head = addr;
   self->wr_curr = addr;
   self->wr_tail = addr + size;
@@ -136,7 +135,7 @@ static inline void writer_puts(writer_t *self, const char *str)
     }
     writer_flush(self);
   }
-  
+
   //while( *str ) writer_putc(self, *str++);
 }
 

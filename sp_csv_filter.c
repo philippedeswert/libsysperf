@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,38 +23,38 @@
 
 /* ========================================================================= *
  * File: sp_csv_filter.c
- * 
+ *
  * Author: Simo Piiroinen
- * 
+ *
  * -------------------------------------------------------------------------
- * 
+ *
  * History:
- * 
+ *
  * 21-Sep-2006 Simo Piiroinen
  * - fixed include paths
- * 
+ *
  * 23-May-2006 Simo Piiroinen
  * - actual filtering code moved to libsysperf
- * 
+ *
  * 05-Jan-2006 Simo Piiroinen
  * - added 'origin' operator -> subtracts value on first row from column
- * 
+ *
  * 22-Jul-2005 Simo Piiroinen
  * - csv API cleanup
  *
  * 14-Jul-2005 Simo Piiroinen
  * - string values can be used in calculations
- * 
+ *
  * 05-Jul-2005 Simo Piiroinen
  * - default operation: one past last '_' in progname instead of skipping
  *   initial "csv_" if present
  * - renamed: app_template.c -> sp_csv_filter.c
- * 
+ *
  * 29-Jun-2005 Simo Piiroinen
  * - added opearions: header, labels
  * - added options: --verbose, --quiet, --silent
  * - EXIT_FAILURE if load or save fails
- * 
+ *
  * 28-Jun-2005 Simo Piiroinen
  * - added opearions: calc, select, unique, usecols, order and reverse
  * - added options: --no-header, --no-labels, --data-only
@@ -90,60 +90,60 @@
 static const manual_t app_man[]=
 {
   MAN_ADD("NAME",
-	  TOOL_NAME"\n"
-	  )
+          TOOL_NAME"\n"
+          )
   MAN_ADD("SYNOPSIS",
-	  ""TOOL_NAME" [options] [operations] \n"
-	  )
+          ""TOOL_NAME" [options] [operations] \n"
+          )
   MAN_ADD("DESCRIPTION",
-	  "This tool allows making various operations on CSV format data.\n"
-	  )
+          "This tool allows making various operations on CSV format data.\n"
+          )
   MAN_ADD("OPTIONS", 0)
 
   MAN_ADD("EXAMPLES",
-	  "% "TOOL_NAME" -ifoo.csv -obar.csv --data-only \\\n"
-	  "          :select:pid>1000 :uniq:pid,app\n"
-	  "\n"
-	  "  Selects rows with <pid> columns larger than 1000 and writes out\n"
-	  "  unique combinations of <pid> and <app> column values omitting\n"
-	  "  headers, labels and empty line separators.\n"
-	  )
+          "% "TOOL_NAME" -ifoo.csv -obar.csv --data-only \\\n"
+          "          :select:pid>1000 :uniq:pid,app\n"
+          "\n"
+          "  Selects rows with <pid> columns larger than 1000 and writes out\n"
+          "  unique combinations of <pid> and <app> column values omitting\n"
+          "  headers, labels and empty line separators.\n"
+          )
 
   MAN_ADD("OPERATIONS",
-	  ":calc:<expr>\n"
-	  ":select:<expr>\n"
-	  ":sort:[label,...]]\n"
-	  ":uniq:[label,...]]\n"
-	  ":usecols:<label,...>\n"
-	  ":remcols:<label,...>\n"
-	  ":order:<label,...>\n"
-	  ":origin:<label,...>\n"
-	  ":reverse:\n"
-	  ":header:\n"
-	  ":labels:\n"
-	  "\n"
-	  "Default operation is derived from binary name, thus calling\n"
-	  "this tool via link named 'csv_select' makes\n"
-	  "  % csv_select 'pid<10'\n"
-	  "equal to\n"
-	  "  % "TOOL_NAME" :select:'pid<10'\n"
-	  "\n"
-	  "The operations are executed after the data has been read in the\n"
-	  "same order as specified on command line\n"
-	  "\n"
-	  "Note that you should escape of quote chars that have special\n"
-	  "meaning for shell.\n"
-	  )
+          ":calc:<expr>\n"
+          ":select:<expr>\n"
+          ":sort:[label,...]]\n"
+          ":uniq:[label,...]]\n"
+          ":usecols:<label,...>\n"
+          ":remcols:<label,...>\n"
+          ":order:<label,...>\n"
+          ":origin:<label,...>\n"
+          ":reverse:\n"
+          ":header:\n"
+          ":labels:\n"
+          "\n"
+          "Default operation is derived from binary name, thus calling\n"
+          "this tool via link named 'csv_select' makes\n"
+          "  % csv_select 'pid<10'\n"
+          "equal to\n"
+          "  % "TOOL_NAME" :select:'pid<10'\n"
+          "\n"
+          "The operations are executed after the data has been read in the\n"
+          "same order as specified on command line\n"
+          "\n"
+          "Note that you should escape of quote chars that have special\n"
+          "meaning for shell.\n"
+          )
 
   MAN_ADD("COPYRIGHT",
-	  "Copyright (C) 2001, 2004-2007 Nokia Corporation.\n\n"
-	  "This is free software.  You may redistribute copies of it under the\n"
-	  "terms of the GNU General Public License v2 included with the software.\n"
-	  "There is NO WARRANTY, to the extent permitted by law.\n"
-	  )
+          "Copyright (C) 2001, 2004-2007 Nokia Corporation.\n\n"
+          "This is free software.  You may redistribute copies of it under the\n"
+          "terms of the GNU General Public License v2 included with the software.\n"
+          "There is NO WARRANTY, to the extent permitted by law.\n"
+          )
   MAN_ADD("SEE ALSO",
-	  "\n"
-	  )
+          "\n"
+          )
   MAN_END
 };
 
@@ -160,10 +160,9 @@ enum
   opt_verbose,
   opt_quiet,
   opt_silent,
-  
+
   opt_input,
   opt_output,
-  
 
   opt_no_header,
   opt_no_labels,
@@ -177,49 +176,49 @@ static const option_t app_opt[] =
    * - - - - - - - - - - - - - - - - - - - */
 
   OPT_ADD(opt_help,
-	  "h", "help", 0, 
-	  "This help text\n"),
+          "h", "help", 0,
+          "This help text\n"),
 
   OPT_ADD(opt_vers,
-	  "V", "version", 0, 
-	  "Tool version\n"),
+          "V", "version", 0,
+          "Tool version\n"),
 
   OPT_ADD(opt_verbose,
-	  "v", "verbose", 0,
-	  "Enable diagnostic messages\n"),
+          "v", "verbose", 0,
+          "Enable diagnostic messages\n"),
 
   OPT_ADD(opt_quiet,
-	  "q", "quiet", 0,
-	  "Disable warning messages\n"),
+          "q", "quiet", 0,
+          "Disable warning messages\n"),
 
   OPT_ADD(opt_silent,
-	  "s", "silent", 0,
-	  "Disable all messages\n"),
-  
+          "s", "silent", 0,
+          "Disable all messages\n"),
+
   /* - - - - - - - - - - - - - - - - - - - *
    * application options
    * - - - - - - - - - - - - - - - - - - - */
-  
-  OPT_ADD(opt_input,  
-	  "f", "input", "<source path>",
-	  "Input file to use instead of stdin.\n" ),
 
-  OPT_ADD(opt_output,  
-	  "o", "output", "<destination path>",
-	  "Output file to use instead of stdout.\n" ),
+  OPT_ADD(opt_input,
+          "f", "input", "<source path>",
+          "Input file to use instead of stdin.\n" ),
 
-  OPT_ADD(opt_no_header,  
-	  0, "no-header", 0,
-	  "Omit header rows from Output.\n" ),
+  OPT_ADD(opt_output,
+          "o", "output", "<destination path>",
+          "Output file to use instead of stdout.\n" ),
+
+  OPT_ADD(opt_no_header,
+          0, "no-header", 0,
+          "Omit header rows from Output.\n" ),
 
   OPT_ADD(opt_no_labels,
-	  0, "no-labels", 0,
-	  "Omit label row from Output.\n" ),
+          0, "no-labels", 0,
+          "Omit label row from Output.\n" ),
 
   OPT_ADD(opt_data_only,
-	  0, "data-only", 0,
-	  "Output only data rows.\n" ),
-  
+          0, "data-only", 0,
+          "Output only data rows.\n" ),
+
   OPT_END
 };
 
@@ -288,16 +287,16 @@ void sp_csv_filter_delete(sp_csv_filter_t *self)
 }
 
 /* ------------------------------------------------------------------------- *
- * sp_csv_filter_sanity 
+ * sp_csv_filter_sanity
  * ------------------------------------------------------------------------- */
 
 void sp_csv_filter_sanity(sp_csv_filter_t *self)
 {
-  if( self->input == 0 && self->output == 0 && 
+  if( self->input == 0 && self->output == 0 &&
       isatty(STDIN_FILENO) && isatty(STDOUT_FILENO) )
   {
     msg_fatal("refusing to filter stdin -> stdout interactively\n"
-	      "(use --help for usage)\n");
+              "(use --help for usage)\n");
   }
 }
 
@@ -368,7 +367,7 @@ void sp_csv_filter_handle_arguments(sp_csv_filter_t *self, int ac, char **av)
   {
     int       tag  = 0;
     char     *par  = 0;
-    
+
     if( !argvec_next(args, &tag, &par) )
     {
       msg_error("(use --help for usage)\n");
@@ -380,11 +379,11 @@ void sp_csv_filter_handle_arguments(sp_csv_filter_t *self, int ac, char **av)
     case opt_help:
       argvec_usage(args);
       exit(EXIT_SUCCESS);
-      
+
     case opt_vers:
       printf("%s\n", TOOL_VERS);
       exit(EXIT_SUCCESS);
-      
+
     case opt_verbose:
       msg_incverbosity();
       break;
@@ -397,7 +396,6 @@ void sp_csv_filter_handle_arguments(sp_csv_filter_t *self, int ac, char **av)
       msg_setsilent();
       break;
 
-      
     case opt_input:
       SET_STRING(self->input, par);
       break;
@@ -405,11 +403,11 @@ void sp_csv_filter_handle_arguments(sp_csv_filter_t *self, int ac, char **av)
     case opt_output:
       SET_STRING(self->output, par);
       break;
-      
+
     case opt_noswitch:
       sp_csv_filter_add_expression(self, par);
       break;
-      
+
     case opt_no_header:
       self->table->csv_flags |= CTF_NO_HEADER;
       break;
@@ -420,7 +418,7 @@ void sp_csv_filter_handle_arguments(sp_csv_filter_t *self, int ac, char **av)
 
     case opt_data_only:
       self->table->csv_flags |= (CTF_NO_HEADER | CTF_NO_LABELS |
-			      CTF_NO_TERMINATOR);
+                              CTF_NO_TERMINATOR);
       break;
     }
   }
@@ -448,15 +446,15 @@ int main(int ac, char **av)
   }
 
   csv_addvar(app->table, "filter", TOOL_NAME" "TOOL_VERS);
-  
+
   sp_csv_filter_handle_expressions(app);
 
   if( sp_csv_filter_save_table(app) != 0 )
   {
     exit(EXIT_FAILURE);
   }
-  
+
   sp_csv_filter_delete(app);
-  
+
   return 0;
 }

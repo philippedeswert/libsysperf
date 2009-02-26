@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -35,28 +35,28 @@
  *
  * 08-Oct-2006 Simo Piiroinen
  * - fix: csv_load sets input source name
- * 
+ *
  * 27-Sep-2006 Simo Piiroinen
  * - added csv_delrow, csv_delrow_nocompact, csv_compactrows
- * 
+ *
  * 25-Sep-2006 Simo Piiroinen
  * - sync with calculator changes
- * 
+ *
  * 21-Sep-2006 Simo Piiroinen
  * - optimized csv_load & csv_save functions
- * 
+ *
  * 29-Aug-2006 Simo Piiroinen
  * - fixed also csvtext_compare to treat numbers < strings
- * 
+ *
  * 01-Jun-2006 Simo Piiroinen
  * - fixed incorrect return value for csv_save() and csv_save_as_html
- * 
+ *
  * 30-May-2006 Simo Piiroinen
  * - added csv_save_as_html()
- * 
+ *
  * 29-May-2006 Simo Piiroinen
  * - fixed: csv_save wrote some data to stdout
- * 
+ *
  * 23-May-2006 Simo Piiroinen
  * - filter operators imported from sp_csv_filter application
  *
@@ -113,7 +113,6 @@
 #undef  u8
 #undef  u32
 
-
 /* ========================================================================= *
  * csvvar_t  --  methods
  * ========================================================================= */
@@ -189,7 +188,6 @@ csvvar_setval(csvvar_t *self, const char *val)
   self->cv_val = strdup(val ? val : "");
 }
 
-
 /* ========================================================================= *
  * csvtext_t  --  methods
  * ========================================================================= */
@@ -201,7 +199,6 @@ static size_t     csvtext_adds;
 
 const char csvtext_empty[] = "";
 
-
 /* ------------------------------------------------------------------------- *
  * csvtext_statistics  --  string intern hash table statistics
  * ------------------------------------------------------------------------- */
@@ -209,7 +206,7 @@ const char csvtext_empty[] = "";
 #if DEBUG_CSVTEXT
 static void csvtext_statistics(void) __attribute__((destructor));
 
-static void 
+static void
 csvtext_statistics(void)
 {
   fprintf(stderr, "--\n");
@@ -225,7 +222,7 @@ csvtext_statistics(void)
 
 static void csvtext_release(void) __attribute__((destructor));
 
-static void 
+static void
 csvtext_release(void)
 {
   for( int h = 0; h < HSIZE; ++h )
@@ -244,7 +241,7 @@ csvtext_release(void)
  * csvtext_global_replace_char_hack  --  ploticus & categories ....
  * ------------------------------------------------------------------------- */
 
-void 
+void
 csvtext_global_replace_char_hack(int from, int to)
 {
   for( int h = 0; h < HSIZE; ++h )
@@ -253,7 +250,7 @@ csvtext_global_replace_char_hack(int from, int to)
     {
       for( char *s = t->ct_text; *s; ++ s)
       {
-	if( *s == from ) *s = to;
+        if( *s == from ) *s = to;
       }
     }
   }
@@ -351,32 +348,32 @@ csvtext_compare(const char *s1, const char *s2)
   {
     int c1 = (unsigned char)*s1++;
     int c2 = (unsigned char)*s2++;
-    
+
     if( c1 == 0 || c2 == 0 )
     {
       // early test for end of string, also
       // makes sure "foo3" -> "foo"
       return c1 - c2;
     }
-    
+
     int d1 = ('0' <= c1) && (c1 <= '9');
     int d2 = ('0' <= c2) && (c2 <= '9');
-    
+
     if( (r = d2-d1) != 0 )
     {
       // string > number
       return r;
     }
-    
+
     if( d1 != 0 )
     {
       // number vs number
       unsigned u1 = strtoul(s1-1,(char **)&s1,10);
       unsigned u2 = strtoul(s2-1,(char **)&s2,10);
-      
+
       if( (r = (u1>u2)-(u1<u2)) != 0 )
       {
-	return r;
+        return r;
       }
     }
     else
@@ -384,7 +381,7 @@ csvtext_compare(const char *s1, const char *s2)
       // character vs character
       if( (r = c1-c2) != 0 )
       {
-	return r;
+        return r;
       }
     }
   }
@@ -392,14 +389,12 @@ csvtext_compare(const char *s1, const char *s2)
   //return strcmp(s1, s2);
 }
 
-
 /* ========================================================================= *
  * csvcell_t  --  methods
  * ========================================================================= */
 
 // QUARANTINE static const csvcell_empty = { 0.0, csvtext_empty };
 // QUARANTINE static const csvcell_zero  = { 0.0, NULL };
-
 
 /* ------------------------------------------------------------------------- *
  * csvcell_ctor
@@ -465,7 +460,7 @@ csvcell_iszero(const csvcell_t *self)
  * csvcell_getnumber  --  obtain numerical cell value
  * ------------------------------------------------------------------------- */
 
-/*static inline*/ double 
+/*static inline*/ double
 csvcell_getnumber(const csvcell_t *self)
 {
   // guranteed: zero if non-numerical
@@ -606,7 +601,7 @@ csvcell_diff(const csvcell_t *a, const csvcell_t *b)
   /* - - - - - - - - - - - - - - - - - - - *
    * For double vs. double comparison the
    * result is double difference.
-   * 
+   *
    * For other comparisons the result is
    * similar to csvcell_compare except
    * for return type {r <= -1.0, 0.0, >= 1.0}.
@@ -661,7 +656,7 @@ csvcell_compare_indirect_cb(const void *a, const void *b)
  * csvrow_sizeof  --  calculate size needed for row of given width
  * ------------------------------------------------------------------------- */
 
-/*static inline*/ size_t 
+/*static inline*/ size_t
 csvrow_sizeof(int cols)
 {
   return sizeof(csvrow_t) + cols * sizeof(csvcell_t);
@@ -677,7 +672,7 @@ csvrow_getcell(const csvrow_t *self, int col)
   if( col < 0 || col >= self->cr_cols )
   {
     msg_fatal("csvrow_t: cell access out of bounds [%d/%d]\n",
-	      col, self->cr_cols);
+              col, self->cr_cols);
   }
   return (csvcell_t *)&self->cr_celltab[col];
 }
@@ -851,11 +846,11 @@ csvrow_delete_cb(void *self)
  * csvrow_compare  --  compare two rows in table
  * ------------------------------------------------------------------------- */
 
-int 
+int
 csvrow_compare(const csvrow_t *row1, const csvrow_t *row2)
 {
   int res = 0;
-  
+
   for( int c = 0; c < row1->cr_cols; ++c )
   {
     const csvcell_t *cell1 = &row1->cr_celltab[c];
@@ -872,7 +867,7 @@ csvrow_compare(const csvrow_t *row1, const csvrow_t *row2)
  * csvrow_compare_cb  --  qsort callback for row arrays
  * ------------------------------------------------------------------------- */
 
-int 
+int
 csvrow_compare_cb(const void *row1, const void *row2)
 {
   return csvrow_compare(row1, row2);
@@ -882,12 +877,11 @@ csvrow_compare_cb(const void *row1, const void *row2)
  * csvrow_compare_indirect_cb  --  qsort callback for row ptr arrays
  * ------------------------------------------------------------------------- */
 
-int 
+int
 csvrow_compare_indirect_cb(const void *row1p, const void *row2p)
 {
   return csvrow_compare(*(csvrow_t **)row1p, *(csvrow_t **)row2p);
 }
-
 
 /* ========================================================================= *
  * csv_t  --  methods
@@ -1088,7 +1082,7 @@ csv_getrow(const csv_t *self, int row)
   if( !csv_rowcheck(self, row) )
   {
     msg_fatal("csv_t: row access out of bounds [%d/%d]\n",
-	      row, self->csv_rowcnt);
+              row, self->csv_rowcnt);
   }
   // get rid of const status
   return (csvrow_t *)self->csv_rowtab[row];
@@ -1210,11 +1204,10 @@ csv_ctor(csv_t *self)
   self->csv_labtab = csvrow_create(0);
   self->csv_rowtab = malloc(self->csv_rowmax * sizeof *self->csv_rowtab);
 
-
   self->csv_sepstr = 0;
   self->csv_colflags = 0;
   self->csv_source = 0;
-  
+
   self->csv_flags  = 0;
 }
 
@@ -1273,7 +1266,6 @@ csv_delete_cb(void *self)
   csv_delete(self);
 }
 
-
 /* ------------------------------------------------------------------------- *
  * csv_addvar
  * ------------------------------------------------------------------------- */
@@ -1320,11 +1312,11 @@ csv_delrow_nocompact(csv_t *self, int row)
  * csv_compactrows
  * ------------------------------------------------------------------------- */
 
-void 
+void
 csv_compactrows(csv_t *self)
 {
   int di = 0, si = 0;
-  
+
   while( si < self->csv_rowcnt )
   {
     csvrow_t *r = self->csv_rowtab[si++];
@@ -1347,7 +1339,7 @@ csv_newrow(csv_t *self)
   {
     self->csv_rowmax = self->csv_rowmax * 4 / 3;
     self->csv_rowtab = realloc(self->csv_rowtab,
-			       self->csv_rowmax * sizeof *self->csv_rowtab);
+                               self->csv_rowmax * sizeof *self->csv_rowtab);
   }
 
   csvrow_t *r = csvrow_create(csv_cols(self));
@@ -1382,7 +1374,7 @@ csv_addcol(csv_t *self, const char *lab)
   csvrow_setstring(self->csv_labtab, c, lab);
 
   self->csv_colflags = realloc(self->csv_colflags,
-			       csv_cols(self) * sizeof *self->csv_colflags);
+                               csv_cols(self) * sizeof *self->csv_colflags);
   self->csv_colflags[c] = 0;
 
   return c;
@@ -1459,7 +1451,7 @@ csv_label(const csv_t *self, int col)
   if( col < 0 || col >= csv_cols(self) )
   {
     msg_fatal("csv_t: column access out of boulds [%d / %d]\n",
-	      col, csv_cols(self));
+              col, csv_cols(self));
   }
   return csvrow_getstring(self->csv_labtab, col, 0,0);
 }
@@ -1468,7 +1460,7 @@ csv_label(const csv_t *self, int col)
  * csv_load
  * ------------------------------------------------------------------------- */
 
-int 
+int
 csv_load(csv_t *self, const char *path)
 {
   /* - - - - - - - - - - - - - - - - - - - *
@@ -1497,14 +1489,14 @@ csv_load(csv_t *self, const char *path)
       int n = getline(&data,&size,file);
       if( n <= 0 )
       {
-	return 1;
+        return 1;
       }
-      
+
       if( *data == '#' ) continue;
-      
+
       if( n > 0 && data[n-1] == '\n' ) data[--n] = 0;
       if( n > 0 && data[n-1] == '\r' ) data[--n] = 0;
-      
+
       //printf(">>%s<<\n", data);
       return 0;
     }
@@ -1519,27 +1511,27 @@ csv_load(csv_t *self, const char *path)
     char *pos = data;
     cnt = 0;
     col[cnt++] = pos;
-    
+
     for( ;; )
     {
       switch( *pos )
       {
       case '\t': case ',': case ';':
-	if( *pos == sep )
-	{
-	  *pos++ = 0, col[cnt] = pos;
-	  if( cnt++ == cols )
-	  {
-	    goto at_eol;
-	  }
-	  break;
-	}
+        if( *pos == sep )
+        {
+          *pos++ = 0, col[cnt] = pos;
+          if( cnt++ == cols )
+          {
+            goto at_eol;
+          }
+          break;
+        }
       default:
-	++pos;
-	break;
-	
+        ++pos;
+        break;
+
       case 0x00: case '\r': case '\n':
-	goto at_eol;
+        goto at_eol;
       }
     }
     at_eol:
@@ -1559,7 +1551,7 @@ csv_load(csv_t *self, const char *path)
   {
     perror(path); goto cleanup;
   }
-  
+
   csv_setsource(self, path);
 
   /* - - - - - - - - - - - - - - - - - - - *
@@ -1568,30 +1560,30 @@ csv_load(csv_t *self, const char *path)
 
   for( ;; )
   {
-    if( input() ) 
+    if( input() )
     {
       msg_warning("%s: EOF while reading CSV header\n", path);
       goto at_eof;
     }
-    
+
     if( *data == 0 )
     {
-      if( input() ) 
+      if( input() )
       {
-	msg_warning("%s: EOF after reading CSV header\n", path);
-	goto at_eof;
+        msg_warning("%s: EOF after reading CSV header\n", path);
+        goto at_eof;
       }
       break;
     }
-    
+
     char *value = strchr(data, '=');
-    
+
     if( value == 0 )
     {
       msg_warning("%s: missing CSV header terminator\n", path);
       break;
     }
-    
+
     *value++ = 0;
     csv_addvar(self, cstring_strip(data), cstring_strip(value));
   }
@@ -1605,7 +1597,7 @@ csv_load(csv_t *self, const char *path)
     msg_warning("%s: empty CSV label row\n", path);
     goto at_eof;
   }
-  
+
   {
     int sem = 1;
     int tab = 1;
@@ -1621,10 +1613,9 @@ csv_load(csv_t *self, const char *path)
     if( cols < sem ) cols = sem, sep = ';';
     if( cols < tab ) cols = tab, sep = '\t';
   }
-  
+
   col = calloc(cols+1, sizeof *col);
   idx = calloc(cols+0, sizeof *idx);
-  
 
   /* - - - - - - - - - - - - - - - - - - - *
    * handle label row
@@ -1644,50 +1635,50 @@ csv_load(csv_t *self, const char *path)
 
   for( ;; )
   {
-    if( input() ) 
+    if( input() )
     {
       msg_warning("%s: missing CSV table terminator\n", path);
       goto at_eof;
     }
-    
+
     if( *data == 0 )
     {
       break;
     }
-    
+
     slice();
 
     csvrow_t *row = csv_newrow(self);
-    
+
     for( int i = 0; i < cnt; ++i )
     {
       double val;
       const char *pos = col[i];
-      
+
       switch( *pos )
       {
       case '+':  case '-':  case '.':  case '0' ... '9':
-	val = csv_float_parse(&pos);
-	if( *pos == 0 )
-	{
-	  csvrow_setnumber(row, idx[i], val);
-	  break;
-	}
-	// fall through
-	
+        val = csv_float_parse(&pos);
+        if( *pos == 0 )
+        {
+          csvrow_setnumber(row, idx[i], val);
+          break;
+        }
+        // fall through
+
       default:
-	csvrow_setstring(row, idx[i], col[i]);
-	break;
+        csvrow_setstring(row, idx[i], col[i]);
+        break;
       }
-      
+
       //cellcnt += 1;
       //numeric += csvrow_isnumber(row, idx[i]);
     }
-    
+
     if( cnt != cols )
     {
       msg_warning("%s: too %s columns\n", path,
-		  (cnt<cols) ? "few" : "much");
+                  (cnt<cols) ? "few" : "much");
     }
   }
 
@@ -1696,47 +1687,46 @@ csv_load(csv_t *self, const char *path)
    * - - - - - - - - - - - - - - - - - - - */
 
   at_eof:
-  
+
   error = 0;
-  
+
   /* - - - - - - - - - - - - - - - - - - - *
    * cleanup
    * - - - - - - - - - - - - - - - - - - - */
 
   cleanup:
-  
+
   if( fnew != 0 ) fclose(fnew);
-  
+
   free(data);
   free(col);
   free(idx);
-  
+
   return error;
 }
-
 
 /* ------------------------------------------------------------------------- *
  * csv_save
  * ------------------------------------------------------------------------- */
 
-int 
+int
 csv_save(csv_t *self, const char *path)
 {
   enum { SIZE = 0x8000 };
-  
+
   int     error = -1;
   FILE   *file  = NULL;
   FILE   *newf  = NULL;
-  
+
   char   *data  = malloc(SIZE);
   int     used  = 0;
-  
+
   auto void flush(void)
   {
     fwrite(data, 1, used, file);
     used = 0;
   }
-  
+
   auto void emit(const char *str)
   {
     while( *str )
@@ -1745,7 +1735,7 @@ csv_save(csv_t *self, const char *path)
       data[used++] = *str++;
     }
   }
-  
+
 // QUARANTINE   auto void emitf(const char *fmt, ...)
 // QUARANTINE   {
 // QUARANTINE     char tmp[1024];
@@ -1755,8 +1745,7 @@ csv_save(csv_t *self, const char *path)
 // QUARANTINE     va_end(va);
 // QUARANTINE     emit(tmp);
 // QUARANTINE   }
-  
-  
+
   /* - - - - - - - - - - - - - - - - - - - *
    * open output
    * - - - - - - - - - - - - - - - - - - - */
@@ -1782,7 +1771,6 @@ csv_save(csv_t *self, const char *path)
    * output header
    * - - - - - - - - - - - - - - - - - - - */
 
-  
   if( !(self->csv_flags & CTF_NO_HEADER) )
   {
     for( int i=0, n=array_size(&self->csv_head); i < n; ++i )
@@ -1795,37 +1783,36 @@ csv_save(csv_t *self, const char *path)
     }
     emit("\n");
   }
-  
+
   /* - - - - - - - - - - - - - - - - - - - *
    * output table labels
    * - - - - - - - - - - - - - - - - - - - */
 
-
   if( !(self->csv_flags & CTF_NO_LABELS) )
   {
     csvrow_t *row = self->csv_labtab;
-    
+
     for( int c=0, n=csv_cols(self); c < n; ++c )
     {
       csvcell_t *cell = csvrow_getcell(row, c);
-      
+
       if( c != 0 )
       {
-	emit(",");
+        emit(",");
       }
       if( cell->cc_string )
       {
-	emit(cell->cc_string);
+        emit(cell->cc_string);
       }
       else
       {
-	char t[32];
-	emit(csv_float_to_string(cell->cc_number, t, sizeof t));
+        char t[32];
+        emit(csv_float_to_string(cell->cc_number, t, sizeof t));
       }
     }
     emit("\n");
   }
-  
+
   /* - - - - - - - - - - - - - - - - - - - *
    * output table body
    * - - - - - - - - - - - - - - - - - - - */
@@ -1837,38 +1824,38 @@ csv_save(csv_t *self, const char *path)
     for( int c = 0; c < row->cr_cols; ++c )
     {
       csvcell_t *cell = csvrow_getcell(row, c);
-      
+
       if( c != 0 )
       {
-	emit(",");
+        emit(",");
       }
       if( cell->cc_string )
       {
-	emit(cell->cc_string);
+        emit(cell->cc_string);
       }
       else
       {
-	char t[32];
-	emit(csv_float_to_string(cell->cc_number, t, sizeof t));
+        char t[32];
+        emit(csv_float_to_string(cell->cc_number, t, sizeof t));
       }
     }
     emit("\n");
   }
-  
+
   if( !(self->csv_flags & CTF_NO_TERMINATOR) )
   {
     emit("\n");
   }
-  
+
   flush();
-  
+
   if( ferror(file) )
   {
     perror(path); goto cleanup;
   }
-  
+
   error = 0;
-  
+
   /* - - - - - - - - - - - - - - - - - - - *
    * cleanup
    * - - - - - - - - - - - - - - - - - - - */
@@ -1881,7 +1868,7 @@ csv_save(csv_t *self, const char *path)
   }
   free(data);
 
-  return error; 
+  return error;
 }
 
 /* ------------------------------------------------------------------------- *
@@ -1897,13 +1884,13 @@ csv_save(csv_t *self, const char *path)
 // QUARANTINE   }
 // QUARANTINE   return n;
 // QUARANTINE }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE static int slice(char ***pv, int *pn, char *s, int c)
 // QUARANTINE {
 // QUARANTINE   int i = 0;
 // QUARANTINE   int n = *pn;
 // QUARANTINE   char **v = *pv;
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   for( ;; )
 // QUARANTINE   {
 // QUARANTINE     if( i == n )
@@ -1911,7 +1898,7 @@ csv_save(csv_t *self, const char *path)
 // QUARANTINE       v = realloc(v, ++n * sizeof *v);
 // QUARANTINE     }
 // QUARANTINE     v[i++] = s;
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE     if( (s = strchr(s,c)) == 0 )
 // QUARANTINE     {
 // QUARANTINE       break;
@@ -1920,62 +1907,62 @@ csv_save(csv_t *self, const char *path)
 // QUARANTINE   }
 // QUARANTINE   *pv = v;
 // QUARANTINE   *pn = n;
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   return i;
 // QUARANTINE }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE int
 // QUARANTINE csv_load(csv_t *self, const char *path)
 // QUARANTINE {
 // QUARANTINE   int     error = -1;
 // QUARANTINE   FILE   *file  = NULL;
 // QUARANTINE   FILE   *newf  = NULL;
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   char   *buff  = NULL;
 // QUARANTINE   size_t  size  = 0;
 // QUARANTINE   char   *curr  = NULL;
 // QUARANTINE   int     line  = 0;
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   int    sepchr = ',';
 // QUARANTINE   char **labstr = 0;
 // QUARANTINE   int    labcnt = 0;
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   char **colstr = 0;
 // QUARANTINE   int    colcnt = 0;
 // QUARANTINE   int   *index  = 0;
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   int hdrrows = 0;
 // QUARANTINE   int labrows = 0;
 // QUARANTINE   int dtarows = 0;
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   /* - - - - - - - - - - - - - - - - - - - *
 // QUARANTINE    * input helper function
 // QUARANTINE    * - - - - - - - - - - - - - - - - - - - */
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   auto int next(void);
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   auto int next(void)
 // QUARANTINE   {
 // QUARANTINE     if( curr == 0 )
 // QUARANTINE     {
 // QUARANTINE       do
 // QUARANTINE       {
-// QUARANTINE 	if( getline(&buff,&size,file) == -1 )
-// QUARANTINE 	{
-// QUARANTINE 	  return 0;
-// QUARANTINE 	}
-// QUARANTINE 	line += 1;
-// QUARANTINE 	curr = buff;
-// QUARANTINE 	curr[strcspn(curr,"\r\n")] = 0;
+// QUARANTINE   if( getline(&buff,&size,file) == -1 )
+// QUARANTINE   {
+// QUARANTINE     return 0;
+// QUARANTINE   }
+// QUARANTINE   line += 1;
+// QUARANTINE   curr = buff;
+// QUARANTINE   curr[strcspn(curr,"\r\n")] = 0;
 // QUARANTINE       } while( *curr == '#' );
 // QUARANTINE     }
 // QUARANTINE     return 1;
 // QUARANTINE   }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   /* - - - - - - - - - - - - - - - - - - - *
 // QUARANTINE    * open input
 // QUARANTINE    * - - - - - - - - - - - - - - - - - - - */
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   if( path == NULL || !strcmp(path, "-") )
 // QUARANTINE   {
 // QUARANTINE     file = stdin;
@@ -1985,59 +1972,59 @@ csv_save(csv_t *self, const char *path)
 // QUARANTINE   {
 // QUARANTINE     file = newf = fopen(path, "r");
 // QUARANTINE   }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   csv_setsource(self, path);
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   if( file == NULL )
 // QUARANTINE   {
 // QUARANTINE     perror(path); goto cleanup;
 // QUARANTINE   }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   /* - - - - - - - - - - - - - - - - - - - *
 // QUARANTINE    * parse header
 // QUARANTINE    * - - - - - - - - - - - - - - - - - - - */
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   for( ; ; curr = 0 )
 // QUARANTINE   {
 // QUARANTINE     if( ! next() )
 // QUARANTINE     {
 // QUARANTINE       msg_warning("%s:%d: unexpected EOF while reading %s\n", path, line,
-// QUARANTINE 	      "header");
+// QUARANTINE         "header");
 // QUARANTINE       goto bailout;
 // QUARANTINE     }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE     if( *curr == 0 )
 // QUARANTINE     {
 // QUARANTINE       curr = 0;
 // QUARANTINE       if( hdrrows == 0 )
 // QUARANTINE       {
-// QUARANTINE 	msg_warning("%s:%d: %s header?\n", path, line, "empty");
+// QUARANTINE   msg_warning("%s:%d: %s header?\n", path, line, "empty");
 // QUARANTINE       }
 // QUARANTINE       break;
 // QUARANTINE     }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE     char *val = strchr(curr, '=');
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE     if( val == NULL )
 // QUARANTINE     {
 // QUARANTINE       msg_warning("%s:%d: %s header?\n", path, line,
-// QUARANTINE 	      hdrrows ? "broken" : "missing");
+// QUARANTINE         hdrrows ? "broken" : "missing");
 // QUARANTINE       break;
 // QUARANTINE     }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE     *val++ = 0;
 // QUARANTINE     csv_addvar(self, cstring_strip(curr), cstring_strip(val));
 // QUARANTINE     hdrrows += 1;
 // QUARANTINE   }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   /* - - - - - - - - - - - - - - - - - - - *
 // QUARANTINE    * parse table labels
 // QUARANTINE    * - - - - - - - - - - - - - - - - - - - */
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   if( !next() )
 // QUARANTINE   {
 // QUARANTINE     msg_warning("%s:%d: unexpected EOF while reading %s\n", path, line,
-// QUARANTINE 	    "label row");
+// QUARANTINE       "label row");
 // QUARANTINE     goto bailout;
 // QUARANTINE   }
 // QUARANTINE   else
@@ -2049,13 +2036,13 @@ csv_save(csv_t *self, const char *path)
 // QUARANTINE       int n = count(curr, c);
 // QUARANTINE       if( m < n )
 // QUARANTINE       {
-// QUARANTINE 	m = n, sepchr = c;
+// QUARANTINE   m = n, sepchr = c;
 // QUARANTINE       }
 // QUARANTINE     }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE     slice(&labstr, &labcnt, curr, sepchr);
 // QUARANTINE     index = malloc(labcnt * sizeof *index);
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE     for( int c = 0; c < labcnt; ++c )
 // QUARANTINE     {
 // QUARANTINE       index[c] = csv_addcol(self, labstr[c]);
@@ -2063,77 +2050,77 @@ csv_save(csv_t *self, const char *path)
 // QUARANTINE     curr = 0;
 // QUARANTINE     labrows += 1;
 // QUARANTINE   }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   /* - - - - - - - - - - - - - - - - - - - *
 // QUARANTINE    * parse table body
 // QUARANTINE    * - - - - - - - - - - - - - - - - - - - */
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   for( ; ; curr = 0 )
 // QUARANTINE   {
 // QUARANTINE     if( ! next() )
 // QUARANTINE     {
 // QUARANTINE       if( dtarows == 0 )
 // QUARANTINE       {
-// QUARANTINE 	msg_warning("%s:%d: unexpected EOF while reading %s\n", path, line,
-// QUARANTINE 		"data rows");
+// QUARANTINE   msg_warning("%s:%d: unexpected EOF while reading %s\n", path, line,
+// QUARANTINE           "data rows");
 // QUARANTINE       }
 // QUARANTINE       else
 // QUARANTINE       {
-// QUARANTINE 	msg_warning("%s:%d: missing end of data separator line?\n", path, line);
+// QUARANTINE   msg_warning("%s:%d: missing end of data separator line?\n", path, line);
 // QUARANTINE       }
 // QUARANTINE       goto bailout;
 // QUARANTINE     }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE     if( *curr == 0 )
 // QUARANTINE     {
 // QUARANTINE       if( dtarows == 0 )
 // QUARANTINE       {
-// QUARANTINE 	msg_warning("%s:%d: empty table body?\n", path, line);
+// QUARANTINE   msg_warning("%s:%d: empty table body?\n", path, line);
 // QUARANTINE       }
 // QUARANTINE       curr = 0;
 // QUARANTINE       break;
 // QUARANTINE     }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE     int n = slice(&colstr, &colcnt, curr, sepchr);
 // QUARANTINE     int m = (n < labcnt) ? n : labcnt;
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE     if( n != labcnt )
 // QUARANTINE     {
 // QUARANTINE       msg_warning("%s:%d: found %d cols instead of %d\n",
-// QUARANTINE 	      path, line, n, labcnt);
+// QUARANTINE         path, line, n, labcnt);
 // QUARANTINE     }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE     csvrow_t *r = csv_newrow(self);
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE     for( int c = 0; c < m; ++c )
 // QUARANTINE     {
 // QUARANTINE       csvrow_setauto(r, index[c], colstr[c]);
 // QUARANTINE     }
 // QUARANTINE     dtarows += 1;
 // QUARANTINE   }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   /* - - - - - - - - - - - - - - - - - - - *
 // QUARANTINE    * cleanup
 // QUARANTINE    * - - - - - - - - - - - - - - - - - - - */
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   bailout:
 // QUARANTINE   error = 0;
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   cleanup:
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   if( newf != NULL )
 // QUARANTINE   {
 // QUARANTINE     fclose(newf);
 // QUARANTINE   }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   free(index);
 // QUARANTINE   free(labstr);
 // QUARANTINE   free(colstr);
 // QUARANTINE   free(buff);
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   return error;
 // QUARANTINE }
-// QUARANTINE 
+// QUARANTINE
 
 /* ------------------------------------------------------------------------- *
  * csv_save
@@ -2145,11 +2132,11 @@ csv_save(csv_t *self, const char *path)
 // QUARANTINE   int     error = -1;
 // QUARANTINE   FILE   *file  = NULL;
 // QUARANTINE   FILE   *newf  = NULL;
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   /* - - - - - - - - - - - - - - - - - - - *
 // QUARANTINE    * open output
 // QUARANTINE    * - - - - - - - - - - - - - - - - - - - */
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   if( path == NULL || !strcmp(path, "-") )
 // QUARANTINE   {
 // QUARANTINE     file = stdout;
@@ -2159,19 +2146,19 @@ csv_save(csv_t *self, const char *path)
 // QUARANTINE   {
 // QUARANTINE     file = newf = fopen(path, "w");
 // QUARANTINE   }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   csv_setsource(self, path);
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   if( file == NULL )
 // QUARANTINE   {
 // QUARANTINE     perror(path); goto cleanup;
 // QUARANTINE   }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   /* - - - - - - - - - - - - - - - - - - - *
 // QUARANTINE    * output header
 // QUARANTINE    * - - - - - - - - - - - - - - - - - - - */
-// QUARANTINE 
-// QUARANTINE   
+// QUARANTINE
+// QUARANTINE
 // QUARANTINE   if( !(self->csv_flags & CTF_NO_HEADER) )
 // QUARANTINE   {
 // QUARANTINE     for( int i=0, n=array_size(&self->csv_head); i < n; ++i )
@@ -2181,12 +2168,12 @@ csv_save(csv_t *self, const char *path)
 // QUARANTINE     }
 // QUARANTINE     fprintf(file, "\n");
 // QUARANTINE   }
-// QUARANTINE   
+// QUARANTINE
 // QUARANTINE   /* - - - - - - - - - - - - - - - - - - - *
 // QUARANTINE    * output table labels
 // QUARANTINE    * - - - - - - - - - - - - - - - - - - - */
-// QUARANTINE 
-// QUARANTINE 
+// QUARANTINE
+// QUARANTINE
 // QUARANTINE   if( !(self->csv_flags & CTF_NO_LABELS) )
 // QUARANTINE   {
 // QUARANTINE     for( int i=0, n=csv_cols(self); i < n; ++i )
@@ -2197,15 +2184,15 @@ csv_save(csv_t *self, const char *path)
 // QUARANTINE     }
 // QUARANTINE     fprintf(file, "\n");
 // QUARANTINE   }
-// QUARANTINE   
+// QUARANTINE
 // QUARANTINE   /* - - - - - - - - - - - - - - - - - - - *
 // QUARANTINE    * output table body
 // QUARANTINE    * - - - - - - - - - - - - - - - - - - - */
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   for( int r = 0; r < self->csv_rowcnt; ++r )
 // QUARANTINE   {
 // QUARANTINE     const csvrow_t *row = self->csv_rowtab[r];
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE     for( int c = 0; c < row->cr_cols; ++c )
 // QUARANTINE     {
 // QUARANTINE       char t[32];
@@ -2214,33 +2201,33 @@ csv_save(csv_t *self, const char *path)
 // QUARANTINE     }
 // QUARANTINE     fprintf(file, "\n");
 // QUARANTINE   }
-// QUARANTINE   
+// QUARANTINE
 // QUARANTINE   if( !(self->csv_flags & CTF_NO_TERMINATOR) )
 // QUARANTINE   {
 // QUARANTINE     fprintf(file, "\n");
 // QUARANTINE   }
-// QUARANTINE   
+// QUARANTINE
 // QUARANTINE   if( ferror(file) )
 // QUARANTINE   {
 // QUARANTINE     perror(path); goto cleanup;
 // QUARANTINE   }
-// QUARANTINE   
+// QUARANTINE
 // QUARANTINE   error = 0;
-// QUARANTINE   
+// QUARANTINE
 // QUARANTINE   /* - - - - - - - - - - - - - - - - - - - *
 // QUARANTINE    * cleanup
 // QUARANTINE    * - - - - - - - - - - - - - - - - - - - */
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   cleanup:
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   if( newf != NULL )
 // QUARANTINE   {
 // QUARANTINE     fclose(newf);
 // QUARANTINE   }
-// QUARANTINE 
+// QUARANTINE
 // QUARANTINE   return error;
 // QUARANTINE }
-// QUARANTINE 
+// QUARANTINE
 /* ------------------------------------------------------------------------- *
  * csv_save_as_html
  * ------------------------------------------------------------------------- */
@@ -2270,7 +2257,7 @@ csv_save_as_html(csv_t *self, const char *path)
       }
     }
   }
-  
+
   /* - - - - - - - - - - - - - - - - - - - *
    * open output
    * - - - - - - - - - - - - - - - - - - - */
@@ -2297,35 +2284,34 @@ csv_save_as_html(csv_t *self, const char *path)
    * - - - - - - - - - - - - - - - - - - - */
 
   fprintf(file, "<html>\n<head><title>");
-  escape(self->csv_source ? 
-	 cstring_basename(self->csv_source) : 
-	 "<unnamed csv data>");
+  escape(self->csv_source ?
+         cstring_basename(self->csv_source) :
+         "<unnamed csv data>");
   fprintf(file, "</title></head>\n<body>\n");
-  
+
   if( !(self->csv_flags & CTF_NO_HEADER) )
   {
     int n = array_size(&self->csv_head);
-    
+
     if( n > 0 )
     {
       fprintf(file, "<table border=1>\n");
       for( int i=0; i < n; ++i )
       {
-	csvvar_t *var = array_get(&self->csv_head, i);
-	fprintf(file, "<tr><th>");
-	escape(var->cv_key);
-	fprintf(file, "<td>");
-	escape(var->cv_val);
-	fprintf(file, "\n");
+        csvvar_t *var = array_get(&self->csv_head, i);
+        fprintf(file, "<tr><th>");
+        escape(var->cv_key);
+        fprintf(file, "<td>");
+        escape(var->cv_val);
+        fprintf(file, "\n");
       }
       fprintf(file, "</table>\n<hr>\n");
     }
   }
-  
+
   /* - - - - - - - - - - - - - - - - - - - *
    * output table labels
    * - - - - - - - - - - - - - - - - - - - */
-
 
   fprintf(file, "<table border=1>\n");
 
@@ -2338,17 +2324,17 @@ csv_save_as_html(csv_t *self, const char *path)
       const csvcell_t *cell = csvrow_getcell(row, c);
       if( csvcell_isnumber(cell) )
       {
-	fprintf(file, "<th align=right>"CELL_FMT"\n", csvcell_getnumber(cell));
+        fprintf(file, "<th align=right>"CELL_FMT"\n", csvcell_getnumber(cell));
       }
       else
       {
-	fprintf(file, "<th>");
-	escape(csvcell_getstring(cell,0,0));
-	fprintf(file, "\n");
+        fprintf(file, "<th>");
+        escape(csvcell_getstring(cell,0,0));
+        fprintf(file, "\n");
       }
     }
   }
-  
+
   /* - - - - - - - - - - - - - - - - - - - *
    * output table body
    * - - - - - - - - - - - - - - - - - - - */
@@ -2363,13 +2349,13 @@ csv_save_as_html(csv_t *self, const char *path)
       const csvcell_t *cell = csvrow_getcell(row, c);
       if( csvcell_isnumber(cell) )
       {
-	fprintf(file, "<td align=right>"CELL_FMT"\n", csvcell_getnumber(cell));
+        fprintf(file, "<td align=right>"CELL_FMT"\n", csvcell_getnumber(cell));
       }
       else
       {
-	fprintf(file, "<td>");
-	escape(csvcell_getstring(cell,0,0));
-	fprintf(file, "\n");
+        fprintf(file, "<td>");
+        escape(csvcell_getstring(cell,0,0));
+        fprintf(file, "\n");
       }
     }
   }
@@ -2380,7 +2366,7 @@ csv_save_as_html(csv_t *self, const char *path)
   {
     perror(path); goto cleanup;
   }
-  
+
   error = 0;
 
   /* - - - - - - - - - - - - - - - - - - - *
@@ -2401,13 +2387,13 @@ csv_save_as_html(csv_t *self, const char *path)
  * csv_sortrows  --  sort rows in table
  * ------------------------------------------------------------------------- */
 
-void 
+void
 csv_sortrows(csv_t *self)
 {
   if( self->csv_rowcnt > 1 )
   {
     qsort(self->csv_rowtab, self->csv_rowcnt, sizeof *self->csv_rowtab,
-	  csvrow_compare_indirect_cb);
+          csvrow_compare_indirect_cb);
   }
 }
 
@@ -2415,11 +2401,11 @@ csv_sortrows(csv_t *self)
  * csv_op_calc  --  evaluate expression row by row
  * ------------------------------------------------------------------------- */
 
-int 
+int
 csv_op_calc(csv_t *self, const char *expr)
 {
   int row = 0;
-  
+
   void getsym(calc_t *calc, void *user, calctok_t *tok)
   {
     if( tok->tok_col < 0 )
@@ -2429,7 +2415,7 @@ csv_op_calc(csv_t *self, const char *expr)
 
     tok->tok_val = *csv_getcell(self, row, tok->tok_col);
   }
-  
+
   void setsym(calc_t *calc, void *user, calctok_t *tok)
   {
     if( tok->tok_col < 0 )
@@ -2441,26 +2427,26 @@ csv_op_calc(csv_t *self, const char *expr)
 
   int     err  = -1;
   calc_t *calc = 0;
-  
+
   calc = calc_create();
   calc->calc_getvar = getsym;
   calc->calc_setvar = setsym;
-  
+
   if( calc_compile(calc, expr) == 0 )
   {
     goto cleanup;
   }
-  
+
   for( row = 0; row < self->csv_rowcnt; ++row )
   {
     calc_evaluate(calc);
   }
-  
+
   err = 0;
   cleanup:
-  
+
   calc_delete(calc);
-  
+
   return err;
 }
 
@@ -2491,16 +2477,16 @@ csv_op_uniq(csv_t *self, const char *labels)
     csvord_apply(ord, self);
     csvord_delete(ord);
   }
-  
+
   csv_sortrows(self);
 
   int di = 0;
   csvrow_t *prev = 0;
-  
+
   for( int si = 0; si < self->csv_rowcnt; ++si )
   {
     csvrow_t *curr = self->csv_rowtab[si];
-    
+
     if( prev != 0 && csvrow_compare(prev, curr) == 0 )
     {
       csvrow_delete(curr);
@@ -2512,7 +2498,6 @@ csv_op_uniq(csv_t *self, const char *labels)
   }
   self->csv_rowcnt = di;
 }
-
 
 /* ------------------------------------------------------------------------- *
  * csv_op_usecols
@@ -2536,18 +2521,18 @@ csv_op_remcols(csv_t *self, const char *labels)
   char *work = strdup(labels);
   char *lab;
   int   col;
-  
+
   for( char *pos = work; *pos; )
   {
     if( *(lab = cstring_split_at_char(pos,&pos,',')) != 0 )
     {
       if( (col = csv_getcol(self, lab)) != -1 )
       {
-	csv_remcol(self, col);
+        csv_remcol(self, col);
       }
     }
   }
-  
+
   free(work);
 }
 
@@ -2561,42 +2546,42 @@ csv_op_origin(csv_t *self, const char *labels)
   char *work = strdup(labels);
   char *lab;
   int   col;
-  
+
   for( char *pos = work; *pos; )
   {
     if( *(lab = cstring_split_at_char(pos,&pos,',')) != 0 )
     {
       if( (col = csv_getcol(self, lab)) != -1 )
       {
-	int       cnt = 0;
-	csvcell_t val = CSVCELL_ZERO;
-	
-	for( int row = 0; row < self->csv_rowcnt; ++row )
-	{
-	  csvcell_t *cell = csv_getcell(self, row, col);
-	  
-	  if( csvcell_isnumber(cell) )
-	  {
-	    if( (cnt++ == 0) || (csvcell_compare(&val, cell) > 0) )
-	    {
-	      val = *cell;
-	    }
-	  }
-	}
+        int       cnt = 0;
+        csvcell_t val = CSVCELL_ZERO;
 
-	for( int row = 0; row < self->csv_rowcnt; ++row )
-	{
-	  csvcell_t *cell = csv_getcell(self, row, col);
-	  
-	  if( csvcell_isnumber(cell) )
-	  {
-	    cell->cc_number -= val.cc_number;
-	  }
-	}
+        for( int row = 0; row < self->csv_rowcnt; ++row )
+        {
+          csvcell_t *cell = csv_getcell(self, row, col);
+
+          if( csvcell_isnumber(cell) )
+          {
+            if( (cnt++ == 0) || (csvcell_compare(&val, cell) > 0) )
+            {
+              val = *cell;
+            }
+          }
+        }
+
+        for( int row = 0; row < self->csv_rowcnt; ++row )
+        {
+          csvcell_t *cell = csv_getcell(self, row, col);
+
+          if( csvcell_isnumber(cell) )
+          {
+            cell->cc_number -= val.cc_number;
+          }
+        }
       }
     }
   }
-  
+
   free(work);
 }
 
@@ -2628,12 +2613,11 @@ csv_op_reverse(csv_t *self)
   }
 }
 
-
 /* ------------------------------------------------------------------------- *
  * csv_op_select  --  evaluate expression row by row
  * ------------------------------------------------------------------------- */
 
-int 
+int
 csv_op_select(csv_t *self, const char *expr)
 {
   int row = 0;
@@ -2647,7 +2631,7 @@ csv_op_select(csv_t *self, const char *expr)
 
     tok->tok_val = *csv_getcell(self, row, tok->tok_col);
   }
-  
+
   void setsym(calc_t *calc, void *user, calctok_t *tok)
   {
     if( tok->tok_col < 0 )
@@ -2659,19 +2643,18 @@ csv_op_select(csv_t *self, const char *expr)
 
   int     err  = -1;
   calc_t *calc = 0;
-  
+
   calc = calc_create();
   calc->calc_getvar = getsym;
   calc->calc_setvar = setsym;
-  
-  
+
   if( calc_compile(calc, expr) == 0 )
   {
     goto cleanup;
   }
-  
+
   int cnt = 0;
-  
+
   for( row = 0; row < self->csv_rowcnt; ++row )
   {
     if( fabs(calc_evaluate(calc)) < CSV_EPSILON )
@@ -2683,14 +2666,14 @@ csv_op_select(csv_t *self, const char *expr)
       self->csv_rowtab[cnt++] = self->csv_rowtab[row];
     }
   }
-  
+
   self->csv_rowcnt = cnt;
-  
+
   err = 0;
   cleanup:
-  
+
   calc_delete(calc);
-  
+
   return err;
 }
 
@@ -2705,12 +2688,12 @@ csv_filter(csv_t *self, const char *expression, const char *defop)
   char *work = strdup(expression);
   const char *expr = work;
   const char *oper = defop ? defop : "calc";
-  
+
   if( *work == ':' )
   {
     oper = cstring_split_at_char(work+1, (char **)&expr, ':');
   }
-  
+
   if( !strcmp(oper, "calc") )
   {
     csv_op_calc(self, expr);
@@ -2787,17 +2770,16 @@ csv_filter(csv_t *self, const char *expression, const char *defop)
       free(tmp);
     }
   }
-  
+
   err = 0;
-  
+
   cleanup:
-  
+
   free(work);
-  
+
   return err;
 }
 
-
 // XoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoX
 // oXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXo
 // XoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoX
@@ -2815,9 +2797,6 @@ csv_filter(csv_t *self, const char *expression, const char *defop)
 // XoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoX
 // oXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXoXo
 
-
-
-
 /* ========================================================================= *
  * csvord_t  --  methods
  * ========================================================================= */
@@ -2836,7 +2815,7 @@ csvord_create(csv_t *csv, const char *labels, int remove_rest)
   char *work = strdup(labels);
   int   indx = 0;
   int   size = 0;
-  
+
   /* - - - - - - - - - - - - - - - - - - - *
    * init tables
    * - - - - - - - - - - - - - - - - - - - */
@@ -2860,13 +2839,13 @@ csvord_create(csv_t *csv, const char *labels, int remove_rest)
       int col = csv_getcol(csv, lab);
       if( col != -1 && flag[col] == -1 )
       {
-	flag[col] = indx++;
+        flag[col] = indx++;
       }
     }
   }
 
   /* - - - - - - - - - - - - - - - - - - - *
-   * add rest of cols 
+   * add rest of cols
    * - - - - - - - - - - - - - - - - - - - */
 
   if( remove_rest == 0 )
@@ -2875,15 +2854,15 @@ csvord_create(csv_t *csv, const char *labels, int remove_rest)
     {
       if( flag[col] == -1 )
       {
-	flag[col] = indx++;
+        flag[col] = indx++;
       }
     }
   }
-  
+
   /* - - - - - - - - - - - - - - - - - - - *
    * assign back & forth indices
    * - - - - - - - - - - - - - - - - - - - */
-  
+
   for( int col = 0; col < cols; ++col )
   {
     if( (indx = flag[col]) != -1 )
@@ -2902,16 +2881,14 @@ csvord_create(csv_t *csv, const char *labels, int remove_rest)
 // QUARANTINE   printf("BACK:");
 // QUARANTINE   for( int col = 0; col < cols; ++col ) printf(" %d", back[col]);
 // QUARANTINE   printf("\n");
-  
 
   /* - - - - - - - - - - - - - - - - - - - *
    * cleanup & create object
    * - - - - - - - - - - - - - - - - - - - */
 
-  
   free(flag);
   free(work);
-  
+
   csvord_t *self = calloc(1, sizeof *self);
   self->co_cols = size;
   self->co_forw = forw;
@@ -2923,7 +2900,7 @@ csvord_create(csv_t *csv, const char *labels, int remove_rest)
  * csvord_delete
  * ------------------------------------------------------------------------- */
 
-void 
+void
 csvord_delete(csvord_t *self)
 {
   if( self != 0 )
@@ -2955,7 +2932,7 @@ csvord_apply(csvord_t *self, csv_t *csv)
     }
     row->cr_cols = self->co_cols;
   }
-  
+
   dorow(csv->csv_labtab);
   for( int r = 0; r < csv->csv_rowcnt; ++r )
   {
@@ -2984,7 +2961,7 @@ csvord_unapply(csvord_t *self, csv_t *csv)
     }
     row->cr_cols = self->co_cols;
   }
-  
+
   dorow(csv->csv_labtab);
   for( int r = 0; r < csv->csv_rowcnt; ++r )
   {

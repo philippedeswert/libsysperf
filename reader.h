@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -29,7 +29,7 @@
  * -------------------------------------------------------------------------
  *
  * History:
- * 
+ *
  * 05-Oct-2005 Simo Piiroinen
  * - include file fixes
  *
@@ -49,7 +49,6 @@ extern "C" {
 } /* fool JED indentation ... */
 #endif
 
-
 typedef struct reader_t reader_t;
 
 typedef struct reader_vtab_t
@@ -57,7 +56,7 @@ typedef struct reader_vtab_t
   void  (*detach)  (reader_t *);
   int   (*read)    (reader_t *, void *, int);
   char *(*readline)(reader_t *, char **, size_t *);
- 
+
 } reader_vtab_t;
 
 struct reader_t
@@ -66,13 +65,13 @@ struct reader_t
 
   char *path;
   int   line;
-  
+
   /* - - - - - - - - - - - - - - - - - - - *
    * stream
    * - - - - - - - - - - - - - - - - - - - */
 
   FILE *file;
-  
+
   /* - - - - - - - - - - - - - - - - - - - *
    * mmap
    * - - - - - - - - - - - - - - - - - - - */
@@ -82,7 +81,6 @@ struct reader_t
   char *curr;
 };
 
-
 /* reader.c */
 reader_t *reader_create(void);
 void reader_delete(reader_t *self);
@@ -90,7 +88,6 @@ char *reader_readline(reader_t *self, char **pbuff, size_t *psize);
 int reader_read(reader_t *self, void *buff, size_t size);
 void reader_detach(reader_t *self);
 int reader_attach(reader_t *self, const char *path);
-
 
 #ifdef __cplusplus
 };

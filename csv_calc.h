@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,13 +23,13 @@
 
 /* ========================================================================= *
  * File: csv_calc.h
- * 
+ *
  * Author: Simo Piiroinen
- * 
+ *
  * -------------------------------------------------------------------------
- * 
+ *
  * History:
- * 
+ *
  * 14-Sep-2005 Simo Piiroinen
  * - initial version
  * ========================================================================= */
@@ -60,7 +60,6 @@ csv_calc_t *csv_calc_create(csv_t *table, const char *expr);
 double csv_calc_row_value(csv_calc_t *self, int row);
 int csv_calc_row_true(csv_calc_t *self, int row);
 void csv_calc_all_rows(csv_calc_t *self);
-
 
 #ifdef __cplusplus
 };

@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -47,13 +47,13 @@ typedef unsigned char u8;
 
 unsigned hash_str(const char *str)
 {
-  int len = strlen(str);  
+  int len = strlen(str);
   len = (len + 3) & ~3;
   void *data = alloca(len);
   strncpy(data, str, len);
-  
+
   assert( !(3 & (int)data) );
-  
+
   return jhash2(data, len>>2, 0);
 }
 
@@ -62,7 +62,7 @@ unsigned hash_str(const char *str)
 int main(int ac, char **av)
 {
   char buf[1024];
-  
+
   while( fgets(buf, sizeof buf, stdin) )
   {
     buf[strcspn(buf,"\r\n")]=0;

@@ -7,14 +7,14 @@
 # Contact: Eero Tamminen <eero.tamminen@nokia.com>
 #
 # This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License 
-# version 2 as published by the Free Software Foundation. 
+# modify it under the terms of the GNU General Public License
+# version 2 as published by the Free Software Foundation.
 #
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
@@ -67,7 +67,6 @@ SYNOPSIS
 DESCRIPTION
   This tool can be used to create simple text or html documentation
   with tables of content from "tagged" ascii source files.
-  
 
 OPTIONS
   -h | --help
@@ -85,7 +84,7 @@ OPTIONS
   -o <path> | --output=<path>
         Output file to use instead of stdout.
   -m <mode> | --mode=<mode>
-  	Default is html, or determined from output path.
+        Default is html, or determined from output path.
 
 EXAMPLES
 
@@ -109,9 +108,8 @@ EXAMPLES
   ::LINK [<link-desc>::]<link-url>
   ::INC <file-to-include>
   ::IMG <image-url>
-  
-  ::END
 
+  ::END
 
   % <NAME> -f document.src -o document.txt
 
@@ -153,17 +151,17 @@ msg_verbose  = 3
 
 def msg_emit(lev,tag,msg):
     if msg_verbose >= lev:
-    	msg = string.split(msg,"\n")
-    	msg = map(string.rstrip, msg)
-    	while msg and msg[-1] == "":
-	    msg.pop()
+        msg = string.split(msg,"\n")
+        msg = map(string.rstrip, msg)
+        while msg and msg[-1] == "":
+            msg.pop()
 
-	pad = "|" + " " * (len(tag)-1)
+        pad = "|" + " " * (len(tag)-1)
 
-    	for s in msg:
-	    s = string.expandtabs(s)
-	    print>>sys.stderr, "%s%s" % (tag, s)
-	    tag = pad
+        for s in msg:
+            s = string.expandtabs(s)
+            print>>sys.stderr, "%s%s" % (tag, s)
+            tag = pad
 
 def msg_fatal(msg):
     msg_emit(1, msg_progname + ": FATAL: ", msg)
@@ -293,15 +291,14 @@ latin1_to_html = {
   chr(0xff): "&yuml;",
 }
 
-
 # ----------------------------------------------------------------
 def slice(txt,sep,cnt):
     if txt == None:
-	return [None] * cnt
+        return [None] * cnt
     v = string.split(txt,sep,cnt-1)
     v = map(string.strip, v)
     while len(v) < cnt:
-	v.append(None)
+        v.append(None)
     return v
 
 def rslice(txt,sep,cnt):
@@ -319,42 +316,39 @@ def heading_level(text):
 
     c = text[:1]
     if heading_level_lut.has_key(c):
-	if text.count(c) == len(text):
-	    return heading_level_lut[c]
+        if text.count(c) == len(text):
+            return heading_level_lut[c]
     return TXT
-
 
 def preprocess(stk,txt,path):
     assert not path in stk
     stk.append(path)
 
     if path == None:
-	srce = sys.stdin
+        srce = sys.stdin
     else:
-	srce = open(path)
-    
-    for i in srce:
-	i = i.rstrip()
-	i = i.expandtabs()
-	
-	if i[:2] != "::":
-	    txt.append(i)
-	    continue
-	v = i.split()
-	k,v = v[0],v[1:]
-	if k == "::END":
-	    break
-	elif k == "::INC":
-	    p = v[0]
-	    if p[:1] != "/":
-		p = os.path.join(os.path.dirname(path), p)
-	    preprocess(stk,txt,p)
-	else:
-	    txt.append(i)
-    
-    assert stk.pop() == path
+        srce = open(path)
 
-    
+    for i in srce:
+        i = i.rstrip()
+        i = i.expandtabs()
+
+        if i[:2] != "::":
+            txt.append(i)
+            continue
+        v = i.split()
+        k,v = v[0],v[1:]
+        if k == "::END":
+            break
+        elif k == "::INC":
+            p = v[0]
+            if p[:1] != "/":
+                p = os.path.join(os.path.dirname(path), p)
+            preprocess(stk,txt,p)
+        else:
+            txt.append(i)
+
+    assert stk.pop() == path
 
 # ----------------------------------------------------------------
 def read_file(path):
@@ -365,21 +359,20 @@ def read_file(path):
 
     srce, stk = [],[]
     preprocess(stk,srce,path)
-    
+
 ## QUARANTINE     if path == None:
-## QUARANTINE 	srce = sys.stdin.readlines()
+## QUARANTINE   srce = sys.stdin.readlines()
 ## QUARANTINE     else:
-## QUARANTINE 	srce = open(path).readlines()
+## QUARANTINE   srce = open(path).readlines()
 ## QUARANTINE     srce = map(string.rstrip, srce)
 ## QUARANTINE     srce = map(string.expandtabs, srce)
-## QUARANTINE 
+## QUARANTINE
 ## QUARANTINE     i,n = 0,len(srce)
 ## QUARANTINE     while i < n:
-## QUARANTINE 	if srce[i] == "::END":
-## QUARANTINE 	    del srce[i:]
-## QUARANTINE 	    break
-## QUARANTINE 	i += 1
-
+## QUARANTINE   if srce[i] == "::END":
+## QUARANTINE       del srce[i:]
+## QUARANTINE       break
+## QUARANTINE   i += 1
 
     # go through the text rows in reverse order
     # so that we encounter the heading underlines
@@ -390,25 +383,25 @@ def read_file(path):
     pad  = ["",""]
 
     while srce:
-	row = srce.pop()
+        row = srce.pop()
 
-	# ::TAG ARGS
-	if row[:2] == "::":
-	    tag,arg = slice(row,None,2)
-	    dest.append([TAG,tag,arg])
-	    lev = TXT
-	    continue
+        # ::TAG ARGS
+        if row[:2] == "::":
+            tag,arg = slice(row,None,2)
+            dest.append([TAG,tag,arg])
+            lev = TXT
+            continue
 
-	# previous row was heading underline
-	# -> this line is heading text
-	if row and lev:
-	    dest.append([lev,row,None])
-	    continue
+        # previous row was heading underline
+        # -> this line is heading text
+        if row and lev:
+            dest.append([lev,row,None])
+            continue
 
-	# if not underline, normal text
-	lev = heading_level(row)
-	if lev == TXT:
-	    dest.append([lev,row,None])
+        # if not underline, normal text
+        lev = heading_level(row)
+        if lev == TXT:
+            dest.append([lev,row,None])
 
     # return rows in original order
     dest.reverse()
@@ -419,7 +412,6 @@ def read_file(path):
 def get_heading_rows(rows):
     return filter(lambda x:x[0]>TXT, rows)
 
-
 # ----------------------------------------------------------------
 def enum_heading_rows(rows):
     # generate heading numbers: 1, 1.1, 1.2, etc
@@ -428,11 +420,10 @@ def enum_heading_rows(rows):
     cnt = clr[:]
 
     for r in get_heading_rows(rows):
-	lev = r[0]
-	cnt[lev-1] += 1
-	cnt = cnt[:lev] + clr[lev:]
-	r[2] = string.join(map(str, cnt[:lev]),".")
-
+        lev = r[0]
+        cnt[lev-1] += 1
+        cnt = cnt[:lev] + clr[lev:]
+        r[2] = string.join(map(str, cnt[:lev]),".")
 
 # ----------------------------------------------------------------
 # Row type predicates
@@ -442,25 +433,24 @@ def empty_p(r):   return r[0] == TXT and not r[1]
 # ----------------------------------------------------------------
 def filter_empty_rows_sub(srce,temp):
     while srce:
-	r = srce.pop()
-	if not empty_p(r):
-	    temp.append(r)
-	    continue
-	while srce:
-	    n = srce.pop()
-	    if empty_p(n):
-		continue
-	    if not heading_p(n):
-		temp.append(r)
-	    temp.append(n)
-	    break
+        r = srce.pop()
+        if not empty_p(r):
+            temp.append(r)
+            continue
+        while srce:
+            n = srce.pop()
+            if empty_p(n):
+                continue
+            if not heading_p(n):
+                temp.append(r)
+            temp.append(n)
+            break
 
 # ----------------------------------------------------------------
 def filter_empty_rows(srce):
     temp = []
     filter_empty_rows_sub(srce, temp)
     filter_empty_rows_sub(temp, srce)
-
 
 # ----------------------------------------------------------------
 def html_escape(text):
@@ -484,27 +474,27 @@ def pre_off(pre, txt):
 
 def img_html(_,arg):
     if "::" in arg:
-	alt,img = arg.split("::",1)
+        alt,img = arg.split("::",1)
     else:
-	alt,img = "",arg
+        alt,img = "",arg
     alt,img = map(string.strip, (alt,img))
     base = os.path.splitext(img)[0]
     cmap = base + ".cmap"
     if os.path.exists(cmap):
-	_('<map name="%s">' % base)
-	for s in open(cmap):
-	    _(s.rstrip())
-	_('</map>')
-	_('<img src="%s" usemap="#%s">'%(img,base))
+        _('<map name="%s">' % base)
+        for s in open(cmap):
+            _(s.rstrip())
+        _('</map>')
+        _('<img src="%s" usemap="#%s">'%(img,base))
     else:
-	_('<img src="%s">'%(img))
+        _('<img src="%s">'%(img))
 
 # ----------------------------------------------------------------
 def to_html(srce, title=None):
 
     if title == None:
-	title = "<no title>"
-    
+        title = "<no title>"
+
     # generate TOC as nested HTML lists
 
     stk = [0]
@@ -512,28 +502,28 @@ def to_html(srce, title=None):
     _ = lambda x:toc.append(x)
 
     for lev,txt,arg in get_heading_rows(srce):
-	if lev == 1 and stk[-1] > 1:
-	    _("<br><br>")
+        if lev == 1 and stk[-1] > 1:
+            _("<br><br>")
 
-	while lev < stk[-1]:
-	    _("</ul>")
-	    stk.pop()
+        while lev < stk[-1]:
+            _("</ul>")
+            stk.pop()
 
-	if lev > stk[-1]:
-	    _("<ul>")
-	    stk.append(lev)
+        if lev > stk[-1]:
+            _("<ul>")
+            stk.append(lev)
 
-	tag  = "%s %s"   % (arg,txt)
-	tag  = html_escape(tag)
-	name = "toc_%s"  % arg
-	href = "#doc_%s" % arg
+        tag  = "%s %s"   % (arg,txt)
+        tag  = html_escape(tag)
+        name = "toc_%s"  % arg
+        href = "#doc_%s" % arg
 
-	_('<li><a name="%s"></a><a href="%s">%s</a>' % (name,href,tag))
+        _('<li><a name="%s"></a><a href="%s">%s</a>' % (name,href,tag))
 
-	if lev == 1: _("<br><br>")
+        if lev == 1: _("<br><br>")
 
     while stk.pop() > 0:
-	_("</ul>")
+        _("</ul>")
 
     toc = string.join(toc, "\n")
 
@@ -552,55 +542,55 @@ def to_html(srce, title=None):
     pre = 0
     for lev,txt,arg in srce:
 
-	if lev == TXT:
-	    pre,txt = pre_on(pre, html_escape(txt))
-	    _(txt)
+        if lev == TXT:
+            pre,txt = pre_on(pre, html_escape(txt))
+            _(txt)
 
-	elif lev == TAG:
-	    txt,tag = None,txt
+        elif lev == TAG:
+            txt,tag = None,txt
 
-	    if tag == "::":
-		pass
-	    elif tag == "::HR":
-		txt = "<hr>"
-	    elif tag == "::TOC":
-		pre,txt = pre_off(pre,toc)
-	    elif tag == "::IMG":
-		img_html(_,arg)
-	    elif tag == "::LINK":
-		arg = map(string.strip, arg.split("::",1))
-		link = arg.pop()
-		if arg:
-		    name = arg.pop()
-		else:
-		    name = link
-		name = html_escape(name)
-		txt = '<a href="%s">%s</a>' % (link, name)
-	    else:
-		print>>sys.stderr, "Unknown TAG: %s" % repr(tag)
-		sys.exit(1)
+            if tag == "::":
+                pass
+            elif tag == "::HR":
+                txt = "<hr>"
+            elif tag == "::TOC":
+                pre,txt = pre_off(pre,toc)
+            elif tag == "::IMG":
+                img_html(_,arg)
+            elif tag == "::LINK":
+                arg = map(string.strip, arg.split("::",1))
+                link = arg.pop()
+                if arg:
+                    name = arg.pop()
+                else:
+                    name = link
+                name = html_escape(name)
+                txt = '<a href="%s">%s</a>' % (link, name)
+            else:
+                print>>sys.stderr, "Unknown TAG: %s" % repr(tag)
+                sys.exit(1)
 
-	    if txt != None:
-		_(txt)
-	else:
-	    txt  = "%s %s"   % (arg,txt)
-	    name = "doc_%s"  % arg
-	    href = "#toc_%s" % arg
+            if txt != None:
+                _(txt)
+        else:
+            txt  = "%s %s"   % (arg,txt)
+            name = "doc_%s"  % arg
+            href = "#toc_%s" % arg
 
-	    txt  = html_escape(txt)
+            txt  = html_escape(txt)
 
-	    txt  = '<a href="%s">%s</a>' % (href,txt)
-	    txt  = '<h%d>%s</h%d>'       % (lev, txt, lev)
-	    txt  = '<a name="%s"></a>%s' % (name, txt)
+            txt  = '<a href="%s">%s</a>' % (href,txt)
+            txt  = '<h%d>%s</h%d>'       % (lev, txt, lev)
+            txt  = '<a name="%s"></a>%s' % (name, txt)
 
-	    if lev == 1:
-		txt = "<hr>\n" + txt
+            if lev == 1:
+                txt = "<hr>\n" + txt
 
-	    pre,txt = pre_off(pre, txt)
-	    _(txt)
+            pre,txt = pre_off(pre, txt)
+            _(txt)
 
     if pre:
-	_("</pre>")
+        _("</pre>")
     _("</body>")
     _("</html>")
     _("")
@@ -617,15 +607,15 @@ def to_text(srce, title="<no title>"):
     _ = lambda x:toc.append(x)
 
     for lev,txt,arg in get_heading_rows(srce):
-	if lev == 1 or stk[-1] == 1:
-	    _("")
-	while lev < stk[-1]:
-	    stk.pop()
-	if lev > stk[-1]:
-	    stk.append(lev)
-	tag  = "%s %s" % (arg,txt)
-	pad  = "    " * (len(stk)-1)
-	_(pad + tag)
+        if lev == 1 or stk[-1] == 1:
+            _("")
+        while lev < stk[-1]:
+            stk.pop()
+        if lev > stk[-1]:
+            stk.append(lev)
+        tag  = "%s %s" % (arg,txt)
+        pad  = "    " * (len(stk)-1)
+        _(pad + tag)
 
     toc = string.join(toc, "\n")
 
@@ -638,46 +628,46 @@ def to_text(srce, title="<no title>"):
 
     for lev,txt,arg in srce:
 
-	if lev == TXT:
-	    _(txt)
+        if lev == TXT:
+            _(txt)
 
-	elif lev == TAG:
-	    txt,tag = None,txt
-	    if tag == "::":
-		pass
-	    elif tag == "::HR":
-		txt = hr
-	    elif tag == "::IMG":
-		txt = "[IMAGE: %s]" % arg
-	    elif tag == "::TOC":
-		txt = toc
-	    elif tag == "::LINK":
-		arg = map(string.strip, arg.split("::",1))
-		txt = "<%s>" % arg.pop()
-		if arg:
-		    txt = "%s\n%s" % (arg.pop(), txt)
-	    else:
-		print>>sys.stderr, "Unknown TAG: %s" % repr(tag)
-		sys.exit(1)
+        elif lev == TAG:
+            txt,tag = None,txt
+            if tag == "::":
+                pass
+            elif tag == "::HR":
+                txt = hr
+            elif tag == "::IMG":
+                txt = "[IMAGE: %s]" % arg
+            elif tag == "::TOC":
+                txt = toc
+            elif tag == "::LINK":
+                arg = map(string.strip, arg.split("::",1))
+                txt = "<%s>" % arg.pop()
+                if arg:
+                    txt = "%s\n%s" % (arg.pop(), txt)
+            else:
+                print>>sys.stderr, "Unknown TAG: %s" % repr(tag)
+                sys.exit(1)
 
-	    if txt != None:
-		_(txt)
-	else:
-	    if lev == 1: _(hr)
-	    else:        _("")
+            if txt != None:
+                _(txt)
+        else:
+            if lev == 1: _(hr)
+            else:        _("")
 
-	    txt  = "%s %s" % (arg, txt)
-	    pad  = " =-."[lev] * len(txt)
-	    _(txt)
-	    _(pad)
-	    _("")
+            txt  = "%s %s" % (arg, txt)
+            pad  = " =-."[lev] * len(txt)
+            _(txt)
+            _(pad)
+            _("")
 
     _("")
 
     dest = string.join(dest, "\n")
     i,n = 0, len(dest)
     while i < n and dest[i] == "\n":
-	i += 1
+        i += 1
     dest = dest[i:]
     return dest
 
@@ -703,69 +693,64 @@ def main():
     args.reverse()
 
     while args:
-	arg = args.pop()
+        arg = args.pop()
 
-	if arg[:2] == "--":
-	    if '=' in arg:
-		key,val = string.split(arg,"=",1)
-	    else:
-		key,val = arg, ""
-	else:
-	    key,val = arg[:2],arg[2:]
+        if arg[:2] == "--":
+            if '=' in arg:
+                key,val = string.split(arg,"=",1)
+            else:
+                key,val = arg, ""
+        else:
+            key,val = arg[:2],arg[2:]
 
-	if   key in ("-h", "--help"):    tool_usage()
-	elif key in ("-V", "--version"): tool_version()
-	elif key in ("-v", "--verbose"): msg_more_verbose()
-	elif key in ("-q", "--quiet"):   msg_less_verbose()
-	elif key in ("-s", "--silent"):  msg_silent()
+        if   key in ("-h", "--help"):    tool_usage()
+        elif key in ("-V", "--version"): tool_version()
+        elif key in ("-v", "--verbose"): msg_more_verbose()
+        elif key in ("-q", "--quiet"):   msg_less_verbose()
+        elif key in ("-s", "--silent"):  msg_silent()
 
-	elif key in ("-f", "--input"):   input  = val or args.pop()
-	elif key in ("-o", "--output"):  output = val or args.pop()
-	elif key in ("-t", "--title"):   title  = val or args.pop()
-	elif key in ("-m", "--mode"):    mode   = val or args.pop()
+        elif key in ("-f", "--input"):   input  = val or args.pop()
+        elif key in ("-o", "--output"):  output = val or args.pop()
+        elif key in ("-t", "--title"):   title  = val or args.pop()
+        elif key in ("-m", "--mode"):    mode   = val or args.pop()
 
-	else:
-	    msg_fatal("unknown option: %s\n(use --help for usage)\n" % repr(arg))
-
+        else:
+            msg_fatal("unknown option: %s\n(use --help for usage)\n" % repr(arg))
 
     if not mode:
 
-	if not output or os.path.splitext(output)[1] == ".html":
-	    mode = "html"
-	else:
-	    mode = "text"
-
+        if not output or os.path.splitext(output)[1] == ".html":
+            mode = "html"
+        else:
+            mode = "text"
 
     rows = read_file(input)
     filter_empty_rows(rows)
     enum_heading_rows(rows)
 
     if not title:
-	if input:
-	    title = input
-	    title = os.path.basename(title)
-	    title = os.path.splitext(title)[0]
-	else:
-	    title = "<no title>"
-	
-    
+        if input:
+            title = input
+            title = os.path.basename(title)
+            title = os.path.splitext(title)[0]
+        else:
+            title = "<no title>"
+
     if mode == "html":
-	text = to_html(rows, title)
+        text = to_html(rows, title)
     else:
-	text = to_text(rows, title)
+        text = to_text(rows, title)
 
     if output == None:
-	sys.stdout.write(text)
+        sys.stdout.write(text)
     else:
-	open(output,"w").write(text)
-
-
+        open(output,"w").write(text)
 
 if __name__ == "__main__":
     try:
-	main()
+        main()
     except KeyboardInterrupt:
-	print>>sys.stderr, "User Break"
-	sys.exit(1)
+        print>>sys.stderr, "User Break"
+        sys.exit(1)
 
 ###

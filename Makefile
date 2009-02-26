@@ -5,14 +5,14 @@
 # Contact: Eero Tamminen <eero.tamminen@nokia.com>
 #
 # This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License 
-# version 2 as published by the Free Software Foundation. 
+# modify it under the terms of the GNU General Public License
+# version 2 as published by the Free Software Foundation.
 #
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
@@ -20,15 +20,15 @@
 
 # =============================================================================
 # File: Makefile
-# 
+#
 # Author: Simo Piiroinen
-# 
+#
 # -----------------------------------------------------------------------------
-# 
+#
 # History:
 #
 # 07-Jul-2005 Simo Piiroinen
-# - scans python files too for changelog 
+# - scans python files too for changelog
 # - cleanup
 #
 # 06-Jul-2005 Simo Piiroinen
@@ -74,7 +74,6 @@ CFLAGS  += -Wall
 CFLAGS  += -Werror
 CFLAGS  += -std=c99
 CFLAGS  += -D_GNU_SOURCE
-
 
 ifeq ($(BUILD),debug)
 CFLAGS  += -g# -finstrument-functions
@@ -130,7 +129,6 @@ HEADERS +=\
 	proc_statm.h\
 	proc_status.h
 
-
 # -----------------------------------------------------------------------------
 # Top Level Targets
 # -----------------------------------------------------------------------------
@@ -148,8 +146,8 @@ clean:: mostlyclean
 
 mostlyclean::
 	$(RM) *.o *.q *~
-	
-distclean:: clean	
+
+distclean:: clean
 	$(RM) tags
 
 tags::
@@ -180,7 +178,7 @@ tree :: install
 	gzip -9 -c <$< >$@
 %.1    : %
 	./sp_gen_manfile.py -c ./$< -o $@
-	
+
 # updating static libraries
 lib%.a :
 	$(AR) ru $@ $^
@@ -198,7 +196,7 @@ INSTALL_HDR = $(if $1, install -m644 $1 $2/)
 install-%-man::
 	$(call INSTALL_DIR,$^,$(ROOT)$(MAN1))
 	$(call INSTALL_MAN,$^,$(ROOT)$(MAN1))
-	
+
 install-%-bin::
 	$(call INSTALL_DIR,$^,$(ROOT)$(BIN))
 	$(call INSTALL_BIN,$^,$(ROOT)$(BIN))
@@ -220,7 +218,6 @@ install-dev-bin:: $(BIN_TARGETS)
 install-dev-man:: $(MAN_TARGETS)
 install-dev-lib:: $(LIB_TARGETS)
 install-dev-hdr:: $(HEADERS)
-
 
 # -----------------------------------------------------------------------------
 # Dependency Scanning
@@ -259,7 +256,6 @@ libsysperf.a : \
 	proc_statm.o\
 	proc_status.o
 
-
 sp_csv_filter : LDLIBS += -lm
 sp_csv_filter : sp_csv_filter.o libsysperf.a
 
@@ -268,7 +264,6 @@ fake_csv_pass.c\
 fake_track.c\
 str_split.c\
 str_split.h
-
 
 testmain: LDLIBS += -lm
 testmain: testmain.o libsysperf.a

@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -63,7 +63,6 @@ void mem_chunk_delete(mem_chunk_t *self);
 size_t mem_chunk_avail(mem_chunk_t *self);
 void *mem_chunk_alloc(mem_chunk_t *self, size_t size);
 
-
 /* ========================================================================= *
  * mem_pool_t
  * ========================================================================= */
@@ -73,7 +72,6 @@ struct mem_pool_t
   mem_chunk_t *chunk;
   size_t       alloc;
 };
-
 
 void mem_pool_ctor(mem_pool_t *self);
 void mem_pool_dtor(mem_pool_t *self);
@@ -89,6 +87,5 @@ void *mem_pool_strdup(mem_pool_t *self, const char *str);
 #endif
 
 #endif /* MEM_POOL_H_ */
-
 
 /* mem_pool.c */

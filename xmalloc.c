@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,7 +23,7 @@
 
 /* ========================================================================= *
  * File: xmalloc.c
- * 
+ *
  * Author: Simo Piiroinen
  * ========================================================================= */
 
@@ -140,7 +140,6 @@ void xstrset(char **dst, const char *str)
   *dst = (str == 0) ? 0 : xstrdup(str);
 }
 #endif
-
 
 /* ------------------------------------------------------------------------- *
  * xstrdupn

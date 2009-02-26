@@ -6,8 +6,8 @@
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA
  *
- */ 
+ */
 
 /* ========================================================================= *
  * File: argvec.h
@@ -43,7 +43,6 @@ extern "C" {
 } /* fool JED indentation ... */
 #endif
 
-
 /* ------------------------------------------------------------------------- *
  * manual_t
  * ------------------------------------------------------------------------- */
@@ -52,7 +51,7 @@ typedef struct manual_t
 {
   const char *man_sect;
   const char *man_text;
-  
+
 } manual_t;
 
 #define MAN_ADD(s,c) { s, c },
@@ -82,19 +81,18 @@ typedef struct argvec_t
 {
   int       av_argc;  // argv from main()
   char    **av_argv;  //
-  
+
   int       av_iarg; // parse pos: av_argv[av_iarg][av_ichr]
   int       av_ichr; //
-  
+
   int       av_done; // all args handled succesully
 
-  const 
+  const
   option_t *av_opt; //
-  
+
   const
   manual_t *av_man;
 } argvec_t;
-
 
 /* ------------------------------------------------------------------------- *
  * prototypes
@@ -107,7 +105,6 @@ void argvec_options(argvec_t *self, int verbose);
 void argvec_usage(argvec_t *self);
 char *argvec_pull(argvec_t *self);
 int argvec_next(argvec_t *self, int *ptag, char **pstr);
-
 
 #ifdef __cplusplus
 };

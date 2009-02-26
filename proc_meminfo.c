@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,17 +23,17 @@
 
 /* ========================================================================= *
  * File: proc_meminfo.c
- * 
+ *
  * Author: Simo Piiroinen
- * 
+ *
  * History:
- * 
+ *
  * 21-Sep-2006 Simo Piiroinen
  * - fixed include paths
  *
  * 30-May-2006 Simo Piiroinen
  * - moved from track2 source tree
- * 
+ *
  * 13-Dec-2004 Simo Piiroinen
  * - proc_meminfo_parse now zeroes struct before parsing new values
  * ========================================================================= */
@@ -82,7 +82,6 @@ proc_meminfo_update(proc_meminfo_t *self, char *data)
     key = cstring_split_at_char(data, &data, '\n');
     cstring_split_at_char(key, &val, ':');
 
-
 #define VAR(name)\
   if( !strcmp(key, #name) ) { \
     self->name = strtoul(val,0,0); \
@@ -102,7 +101,7 @@ proc_meminfo_parse(proc_meminfo_t *self, const char *path)
   /* clear old values... just to make sure changes in /proc file contents
    * do not result in uninitialized data */
   memset(self, 0, sizeof *self);
-  
+
   char *data = cstring_from_file(path);
   if( data != 0 )
   {
@@ -126,6 +125,3 @@ proc_meminfo_repr(proc_meminfo_t *self, FILE *file)
 #include "proc_meminfo.inc"
           );
 }
-
-
-

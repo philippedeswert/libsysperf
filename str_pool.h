@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -32,7 +32,7 @@
  *
  * 05-Oct-2005 Simo Piiroinen
  * - include file fixes
- * 
+ *
  * 29-Jun-2005 Simo Piiroinen
  * - cleanup & comments
  *
@@ -67,9 +67,9 @@ typedef struct pooled_str_t pooled_str_t;
 
 struct pooled_str_t
 {
-  pooled_str_t *next;	// chain
-  unsigned      hash;	// hash value of text
-  unsigned      refs;	// use count
+  pooled_str_t *next;   // chain
+  unsigned      hash;   // hash value of text
+  unsigned      refs;   // use count
   char          text[1];// string data
 };
 
@@ -79,16 +79,16 @@ struct pooled_str_t
 
 struct str_pool_t
 {
-  unsigned       hcnt;	// number of interned strings
-  
-  unsigned       hmax;	// size of the hash table
-  pooled_str_t **htab;	// hash table slots for interned strings
-  
-  mem_pool_t     pool;	// memory manager for interned strings
+  unsigned       hcnt;  // number of interned strings
+
+  unsigned       hmax;  // size of the hash table
+  pooled_str_t **htab;  // hash table slots for interned strings
+
+  mem_pool_t     pool;  // memory manager for interned strings
 };
 
 /* ------------------------------------------------------------------------- *
- * extern str_pool_t methods 
+ * extern str_pool_t methods
  * ------------------------------------------------------------------------- */
 
 str_pool_t *str_pool_create(void);
@@ -105,7 +105,7 @@ static inline void str_pool_ctor(str_pool_t *self)
   self->hcnt = 0;
   self->hmax = 32<<10;
   self->htab = calloc(self->hmax, sizeof *self->htab);
-  
+
   mem_pool_ctor(&self->pool);
 }
 
@@ -115,11 +115,9 @@ static inline void str_pool_ctor(str_pool_t *self)
 
 static inline void str_pool_dtor(str_pool_t *self)
 {
-  free(self->htab);  
+  free(self->htab);
   mem_pool_dtor(&self->pool);
 }
-
-
 
 #ifdef __cplusplus
 };

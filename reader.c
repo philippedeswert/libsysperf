@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -32,7 +32,7 @@
  *
  * 22-Jun-2005 11:58:01
  * - line count was increased twice per row
- * 
+ *
  * 21-Jun-2005 Simo Piiroinen
  * - added stream support
  * - initial version
@@ -76,7 +76,6 @@ static void reader_mmap_detach(reader_t *self);
 static int reader_mmap_read(reader_t *self, void *buff, int size);
 static char *reader_mmap_readline(reader_t *self, char **pbuff, size_t *psize);
 static int reader_mmap_attach(reader_t *self, int file, size_t size);
-
 
 /* ========================================================================= *
  * dummy reader
@@ -131,13 +130,13 @@ static int reader_stream_read(reader_t *self, void *buff, int size)
 static char *reader_stream_readline(reader_t *self, char **pbuff, size_t *psize)
 {
   char *line = 0;
-  
+
   ssize_t n = getline(pbuff, psize, self->file);
-  
+
   if( n > 0 )
   {
     line = *pbuff;
-    
+
     if( line[n-1] == '\n' )
     {
       line[n-1] = 0;
@@ -156,7 +155,7 @@ static reader_vtab_t vtab_stream =
 static int reader_stream_attach(reader_t *self, FILE *file)
 {
   msg_debug("@ %s() ...\n", __FUNCTION__);
-  
+
   self->vtab = vtab_stream;
   self->file = file;
   return 0;
@@ -180,7 +179,7 @@ static void reader_mmap_detach(reader_t *self)
   if( self->head != 0 )
   {
     munmap(self->head, self->tail - self->head);
-    
+
     self->head = 0;
     self->tail = 0;
     self->curr = 0;
@@ -195,32 +194,32 @@ static int reader_mmap_read(reader_t *self, void *buff, int size)
 static char *reader_mmap_readline(reader_t *self, char **pbuff, size_t *psize)
 {
   char *line = 0;
-  
+
   if( !reader_mmap_eof(self) )
   {
     char   *buff = *pbuff;
     size_t  size = *psize;
-    
+
     char  *beg = self->curr;
     char  *end = self->curr;
-    
+
     while( end < self->tail && *end != '\n' ) ++end;
-    
+
     size_t len = end-beg;
-    
+
     if( len >= size )
     {
       size = len + 256;
       buff = realloc(buff, size);
     }
-    
+
     memcpy(buff, beg, len);
     buff[len] = 0;
-    
+
     self->curr = (end < self->tail) ? (end+1): end;
-    
+
     //self->line += 1;
-    
+
     *pbuff = line = buff;
     *psize = size;
   }
@@ -237,26 +236,25 @@ static reader_vtab_t vtab_mmap =
 static int reader_mmap_attach(reader_t *self, int file, size_t size)
 {
   msg_debug("@ %s() ...\n", __FUNCTION__);
-    
+
   int   err  = -1;
   void *addr = MAP_FAILED;
-
 
   if( (addr = mmap(0,size,PROT_READ,MAP_SHARED,file,0)) != MAP_FAILED )
   {
     self->vtab  = vtab_mmap;
-    
+
     self->head  = addr;
     self->tail  = addr;
     self->curr  = addr;
-    
+
     self->tail += size;
-    
+
     err = 0;
   }
 
   msg_debug("mmap: file=%d, size=%d, err=%d\n", file, size, err);
-  
+
   return err;
 }
 
@@ -272,7 +270,7 @@ static inline void reader_ctor(reader_t *self)
   self->line = 0;
 
   self->file = 0;
-  
+
   self->head = 0;
   self->tail = 0;
   self->curr = 0;
@@ -330,10 +328,10 @@ int reader_read(reader_t *self, void *buff, size_t size)
 void reader_detach(reader_t *self)
 {
   self->vtab.detach(self);
-  
+
   free(self->path);
   self->path = 0;
-  
+
   reader_dummy_attach(self);
 }
 
@@ -344,7 +342,7 @@ int reader_attach(reader_t *self, const char *path)
   FILE *stream = 0;
 
   struct stat st;
-  
+
   /* - - - - - - - - - - - - - - - - - - - *
    * detach from previous
    * - - - - - - - - - - - - - - - - - - - */
@@ -357,20 +355,20 @@ int reader_attach(reader_t *self, const char *path)
 
   self->path = strdup(path ? path : "<stdin>");
   self->line = 0;
-  
+
   /* - - - - - - - - - - - - - - - - - - - *
    * attach according to file type
    * - - - - - - - - - - - - - - - - - - - */
-  
+
   if( path == 0 )
   {
     if( fstat(STDIN_FILENO, &st) == 0 &&
-	S_ISREG(st.st_mode) )
+        S_ISREG(st.st_mode) )
     {
       if( (err = reader_mmap_attach(self, STDIN_FILENO, st.st_size)) != 0 )
       {
-	msg_error("could not mmap '%s'\n", self->path);
-	goto cleanup;
+        msg_error("could not mmap '%s'\n", self->path);
+        goto cleanup;
       }
     }
     else
@@ -385,42 +383,41 @@ int reader_attach(reader_t *self, const char *path)
       msg_error("could not open '%s'\n", path);
       goto cleanup;
     }
-    
+
     if( fstat(file, &st) != 0 )
     {
       msg_error("could not stat '%s'\n", path);
       goto cleanup;
     }
-    
+
     if( S_ISREG(st.st_mode) )
     {
       if( (err = reader_mmap_attach(self, file, st.st_size)) != 0 )
       {
-	msg_error("could not mmap '%s'\n", path);
-	goto cleanup;
+        msg_error("could not mmap '%s'\n", path);
+        goto cleanup;
       }
     }
     else
     {
       if( (stream = fdopen(file, "r")) == 0 )
       {
-	msg_error("could not fdopen '%s'\n", path);
-	goto cleanup;
+        msg_error("could not fdopen '%s'\n", path);
+        goto cleanup;
       }
       file = -1;
-      
-      
+
       if( (err = reader_stream_attach(self, stream)) != 0 )
       {
-	msg_error("could not attach '%s' stream\n", path);
+        msg_error("could not attach '%s' stream\n", path);
       }
     }
   }
-  
+
   cleanup:
-  
+
   if( stream != 0 ) fclose(stream);
   if( file != -1 ) close(file);
-  
+
   return err;
 }

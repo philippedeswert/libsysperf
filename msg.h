@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -35,13 +35,13 @@
  *
  * 30-May-2006 Simo Piiroinen
  * - added msg_perror()
- * 
+ *
  * 29-Jun-2005 Simo Piiroinen
  * - added msg_setsilent()
- * 
+ *
  * 22-Jun-2005 Simo Piiroinen
  * - now allows local override of MSG_DISABLE_XXX
- * 
+ *
  * 21-Jun-2005 Simo Piiroinen
  * - initial version
  * ========================================================================= */
@@ -96,7 +96,6 @@ void msg_warning_(const char *fmt, ...)  __attribute__((format(printf,1,2)));
 void msg_progress_(const char *fmt, ...) __attribute__((format(printf,1,2)));
 void msg_debug_(const char *fmt, ...)    __attribute__((format(printf,1,2)));
 
-
 #if MSG_DISABLE_WARNING
 # define msg_warning(fmt, ...) do{}while(0)
 #else
@@ -115,13 +114,11 @@ void msg_debug_(const char *fmt, ...)    __attribute__((format(printf,1,2)));
 # define msg_debug(fmt, ...) msg_debug_(fmt, ## __VA_ARGS__)
 #endif
 
-
 void msg_setverbosity(int level);
 int  msg_getverbosity(void);
 void msg_incverbosity(void);
 void msg_decverbosity(void);
 void msg_setsilent(void);
-
 
 #ifdef __cplusplus
 };

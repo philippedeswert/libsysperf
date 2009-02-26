@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -52,7 +52,7 @@
 mem_chunk_t *mem_chunk_create(size_t size)
 {
   msg_debug("%s: %d kB\n", __FUNCTION__, size >> 10);
-  
+
   mem_chunk_t *self = malloc(sizeof *self + size);
   self->head = 0;
   self->tail = size;
@@ -86,9 +86,9 @@ void *mem_chunk_alloc(mem_chunk_t *self, size_t size)
 {
   void *addr = &self->data[self->head];
   self->head += size;
-  
+
   assert( self->head <= self->tail );
-  
+
   return addr;
 }
 
@@ -110,7 +110,7 @@ void mem_pool_ctor(mem_pool_t *self)
 void mem_pool_dtor(mem_pool_t *self)
 {
   mem_chunk_t *chunk;
-  
+
   while( (chunk = self->chunk) != 0 )
   {
     self->chunk = chunk->next;
@@ -149,16 +149,16 @@ void mem_pool_delete(mem_pool_t *self)
 void *mem_pool_alloc(mem_pool_t *self, size_t size)
 {
   size = (size + 3) & ~3;
-  
+
   if( mem_chunk_avail(self->chunk) < size )
   {
     mem_chunk_t *chunk;
-    
+
     chunk = mem_chunk_create(self->alloc);
     chunk->next = self->chunk;
     self->chunk = chunk;
   }
-  
+
   return mem_chunk_alloc(self->chunk, size);
 }
 

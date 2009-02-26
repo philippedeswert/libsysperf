@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -32,34 +32,34 @@
  *
  * 12-Oct-2006 Simo Piiroinen
  * - added csvtext_global_replace_char_hack
- * 
+ *
  * 27-Sep-2006 Simo Piiroinen
  * - added csv_delrow, csv_delrow_nocompact, csv_compactrows
- * 
+ *
  * 21-Sep-2006 Simo Piiroinen
  * - fixed include paths
- * 
+ *
  * 30-May-2006 Simo Piiroinen
  * - added csv_save_as_html()
- * 
+ *
  * 17-May-2006 Simo Piiroinen
  * - new version
- * 
+ *
  * 05-Oct-2005 Simo Piiroinen
  * - include file fixes
- * 
+ *
  * 22-Sep-2005 Simo Piiroinen
  * - added csv_ncols, csv_nrows, ...
- * 
+ *
  * 14-Sep-2005 Simo Piiroinen
  * - added csv_rowcalc()
- * 
+ *
  * 22-Jul-2005 Simo Piiroinen
  * - csv API cleanup
- * 
+ *
  * 14-Jul-2005 Simo Piiroinen
  * - added missing prototypes
- * 
+ *
  * 28-Jun-2005 Simo Piiroinen
  * - added sort, unique, reverse and column shuffle functionality
  * - it is now possible to trim headers, labels & separator lines
@@ -67,7 +67,7 @@
  *
  * 22-Jun-2005 Simo Piiroinen
  * - added csv_getlabel_ex()
- * 
+ *
  * 21-Jun-2005 Simo Piiroinen
  * - added include str_pool.h
  * - initial version
@@ -93,9 +93,7 @@ extern "C" {
 #include "array.h"
 #include "cstring.h"
 
-
 #define CSV_EPSILON DBL_EPSILON
-
 
 /* ========================================================================= *
  * Data Structures
@@ -110,7 +108,6 @@ typedef struct csv_t        csv_t;      // table of cells
 typedef struct csvord_t csvord_t;
 
 // QUARANTINE typedef struct csvshuffle_t csvshuffle_t; // column shuffle book keeping
-
 
 /* ------------------------------------------------------------------------- *
  * csvvar_t  --  csv file header variables
@@ -168,7 +165,6 @@ struct csvrow_t
   csvcell_t  cr_celltab[];
 };
 
-
 enum
 {
   RF_USR1 = (1u<<0),
@@ -196,7 +192,7 @@ struct csv_t
 {
   array_t    csv_head; // array_t<csvvar_t *>
   int        csv_flags;
-  
+
   int        csv_rowcnt;
   int        csv_rowmax;
 
@@ -204,7 +200,6 @@ struct csv_t
 
   csvrow_t  *csv_labtab;
   csvrow_t **csv_rowtab;
-
 
   char      *csv_sepstr;
 
@@ -217,10 +212,10 @@ struct csv_t
 
 // QUARANTINE struct csvshuffle_t
 // QUARANTINE {
-// QUARANTINE   int cs_src;	 // number of cols before shuffle
+// QUARANTINE   int cs_src;      // number of cols before shuffle
 // QUARANTINE   int cs_dst;    // number of cols after shuffle
 // QUARANTINE   int cs_map[0]; // col[cs_map[i]] <- col[i]
-// QUARANTINE   
+// QUARANTINE
 // QUARANTINE };
 
 /* ------------------------------------------------------------------------- *
@@ -234,7 +229,6 @@ struct csvord_t
   int   *co_back;
 };
 
-
 /* ========================================================================= *
  * csvvar_t  --  methods
  * ========================================================================= */
@@ -246,13 +240,11 @@ void      csvvar_delete   (csvvar_t *self);
 void      csvvar_delete_cb(void *self);
 void      csvvar_setval   (csvvar_t *self, const char *val);
 
-
 /* ========================================================================= *
  * csvtext_t  --  methods
  * ========================================================================= */
 
 extern const char csvtext_empty[];
-
 
 const char *csvtext_intern (const char *text);
 int         csvtext_compare(const char *s1, const char *s2);
@@ -281,7 +273,6 @@ int         csvcell_compare            (const csvcell_t *a, const csvcell_t *b);
 double      csvcell_diff               (const csvcell_t *a, const csvcell_t *b);
 int         csvcell_compare_cb         (const void *a, const void *b);
 int         csvcell_compare_indirect_cb(const void *a, const void *b);
-
 
 /* ========================================================================= *
  * csvrow_t  --  methods
@@ -355,7 +346,6 @@ csvrow_t   *csv_newrow      (csv_t *self);
 void        csv_delrow      (csv_t *self, int row);
 void        csv_delrow_nocompact(csv_t *self, int row);
 void        csv_compactrows (csv_t *self);
-
 
 int         csv_addcol      (csv_t *self, const char *lab);
 void        csv_remcol      (csv_t *self, int col);

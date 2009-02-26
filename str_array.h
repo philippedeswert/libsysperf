@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,13 +23,13 @@
 
 /* ========================================================================= *
  * File: str_array.h
- * 
+ *
  * Author: Simo Piiroinen
- * 
+ *
  * -------------------------------------------------------------------------
- * 
+ *
  * History:
- * 
+ *
  * 28-Jun-2005 Simo Piiroinen
  * - imported from track2
  *
@@ -69,8 +69,6 @@ void str_array_add(str_array_t *self, const char *str);
 void str_array_set(str_array_t *self, size_t index, const char *str);
 int str_array_index(const str_array_t *self, const char *str);
 size_t str_array_exclude(str_array_t *self, const str_array_t *excl);
-
-  
 
 #ifdef __cplusplus
 };

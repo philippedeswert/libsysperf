@@ -1,13 +1,13 @@
 /*
  * This file is part of libsysperf
  *
- * Copyright (C) 2001, 2004-2007 by Nokia Corporation. 
+ * Copyright (C) 2001, 2004-2007 by Nokia Corporation.
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License 
- * version 2 as published by the Free Software Foundation. 
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -29,16 +29,16 @@
  * -------------------------------------------------------------------------
  *
  * History:
- * 
+ *
  * 30-May-2006 Simo Piiroinen
  * - added msg_perror()
- * 
+ *
  * 09-Sep-2005 Simo Piiroinen
  * - defaults to verbosity >= warnings
  *
  * 29-Jun-2005 Simo Piiroinen
  * - added msg_setsilent()
- * 
+ *
  * 21-Jun-2005 Simo Piiroinen
  * - initial version
  * ========================================================================= */
@@ -95,26 +95,26 @@ static void msg_defprogname(void)
   int  file = -1;
 
   *msg_progname = 0;
-  
+
   if( (file = open("/proc/self/cmdline", O_RDONLY)) != -1 )
   {
     int n = read(file, temp, sizeof temp-1);
     char *s,*b;
-    
+
     if( n > 0 )
     {
       temp[n] = 0;
-    
+
       for( s = b = temp; *s; ++s )
       {
-	if( *s == '/' ) b = s + 1;
+        if( *s == '/' ) b = s + 1;
       }
-      
+
       strncat(msg_progname, b, sizeof msg_progname-1);
     }
     close(file);
   }
-  
+
   if( *msg_progname == 0 )
   {
     strcpy(msg_progname, "<unknown>");
@@ -131,7 +131,7 @@ const char *msg_getprogname(void)
   {
     msg_defprogname();
   }
-  return msg_progname; 
+  return msg_progname;
 }
 
 /* ------------------------------------------------------------------------- *
@@ -164,24 +164,24 @@ static void msg_emit_va(const char *tag, const char *fmt, va_list va)
   char temp[1<<10];
   int  left = 0;
   char *pos, *end;
-  
+
   left += fprintf(stderr, "%s: ", msg_getprogname());
-  
+
   if( tag != 0 )
   {
-    left += 
+    left +=
     fprintf(stderr, "%s: ", tag);
   }
-  
+
   vsnprintf(temp, sizeof temp, fmt, va);
   for( pos = temp; ; )
   {
     end = pos + strcspn(pos, "\n");
     fprintf(stderr, "%.*s\n", (int)(end-pos), pos);
-    
+
     pos = end + (*end != 0);
     if( *pos == 0 ) break;
-    
+
     fprintf(stderr, "%-*s", left, "|");
   }
 }
@@ -250,7 +250,7 @@ void msg_perror(const char *fmt, ...)
     va_start(va, fmt);
     vsnprintf(tmp, sizeof tmp, fmt, va);
     va_end(va);
-    
+
     msg_error("%s: %s\n", tmp, err);
   }
 }
@@ -351,7 +351,6 @@ void msg_setsilent(void)
 /* ========================================================================= *
  * TEST MAIN
  * ========================================================================= */
-
 
 #if 0
 int main(int ac, char **av)
