@@ -6,6 +6,7 @@ Build-Depends: debhelper (>= 4.1.0), python
 Standards-Version: 3.6.1
 
 Package: libsysperf-dev
+Section: libdevel
 Architecture: any
 Depends: make, python, ${shlibs:Depends}
 Suggests: 
