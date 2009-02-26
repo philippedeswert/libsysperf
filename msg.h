@@ -29,7 +29,10 @@
  * -------------------------------------------------------------------------
  *
  * History:
- * 
+ * 25-Feb-2009 Simo Piiroinen
+ * - added format attributes for logging functions so that gcc
+ *   can do type checking at call points
+ *
  * 30-May-2006 Simo Piiroinen
  * - added msg_perror()
  * 
@@ -85,13 +88,13 @@ enum
 const char *msg_getprogname(void);
 void msg_setprogname(const char *progname);
 
-void msg_fatal(const char *fmt, ...);
-void msg_error(const char *fmt, ...);
-void msg_perror(const char *fmt, ...);
+void msg_fatal(const char *fmt, ...)     __attribute__((format(printf,1,2),noreturn));
+void msg_error(const char *fmt, ...)     __attribute__((format(printf,1,2)));
+void msg_perror(const char *fmt, ...)    __attribute__((format(printf,1,2)));
 
-void msg_warning_(const char *fmt, ...);
-void msg_progress_(const char *fmt, ...);
-void msg_debug_(const char *fmt, ...);
+void msg_warning_(const char *fmt, ...)  __attribute__((format(printf,1,2)));
+void msg_progress_(const char *fmt, ...) __attribute__((format(printf,1,2)));
+void msg_debug_(const char *fmt, ...)    __attribute__((format(printf,1,2)));
 
 
 #if MSG_DISABLE_WARNING
@@ -111,8 +114,6 @@ void msg_debug_(const char *fmt, ...);
 #else
 # define msg_debug(fmt, ...) msg_debug_(fmt, ## __VA_ARGS__)
 #endif
-
-
 
 
 void msg_setverbosity(int level);
