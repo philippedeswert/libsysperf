@@ -1,3 +1,10 @@
+libsysperf (0.2.1) unstable; urgency=low
+
+  * Various issues reported by Coverity have been fixed. Fixes:
+    NB#103722
+
+ -- Eero Tamminen <eero.tamminen@nokia.com>  Wed,  4 Mar 2009 10:40:24 +0200
+
 libsysperf (0.2.0) unstable; urgency=low
 
   * As jhash.h is no longer included in linux-kernel-headers, a copy has
