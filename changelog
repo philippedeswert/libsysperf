@@ -1,0 +1,590 @@
+
+==============================================================================
+2007 week 03 (15.01. - 21.01.)
+==============================================================================
+
+array.h:
+    Simo Piiroinen
+        - NULL item destructor redirected to dummy
+
+calculator.c:
+    Simo Piiroinen
+        - special case for division by zero
+
+==============================================================================
+2006 week 47 (20.11. - 26.11.)
+==============================================================================
+
+csv_float.c:
+    Simo Piiroinen
+        - normalization bug fixed
+
+==============================================================================
+2006 week 41 (09.10. - 15.10.)
+==============================================================================
+
+sp_fix_tool_vers.py:
+    Simo Piiroinen
+        - checks release.h against debian/changelog
+
+csv_table.c csv_table.h:
+    Simo Piiroinen
+        - added csvtext_global_replace_char_hack
+
+==============================================================================
+2006 week 40 (02.10. - 08.10.)
+==============================================================================
+
+csv_table.c:
+    Simo Piiroinen
+        - fix: csv_load sets input source name
+
+==============================================================================
+2006 week 39 (25.09. - 01.10.)
+==============================================================================
+
+calculator.c:
+    Simo Piiroinen
+        - added c-style '?:' operators: L=(val<10)?"LO":"HI"
+        - added '#' operator (COL=="")#(COL="XYZ")
+
+calculator.inc:
+    Simo Piiroinen
+        - 'num' & 'str' merged to 'lit'
+
+calculator.c calculator.h:
+    Simo Piiroinen
+        - short-cut evaluation for '&&' and '||'
+        - uses csvcell_t for holding values
+        - code cleanup
+
+calculator.h calculator.inc:
+    Simo Piiroinen
+        - added '?' operator (COL=="")?(COL="XYZ")
+
+csv_calc.c csv_table.c:
+    Simo Piiroinen
+        - sync with calculator changes
+
+csv_table.c csv_table.h:
+    Simo Piiroinen
+        - added csv_delrow, csv_delrow_nocompact, csv_compactrows
+
+==============================================================================
+2006 week 38 (18.09. - 24.09.)
+==============================================================================
+
+csv_table.c:
+    Simo Piiroinen
+        - optimized csv_load & csv_save functions
+
+csv_table.h proc_maps.c proc_maps.h proc_meminfo.c proc_stat.c proc_statm.c
+proc_status.c sp_csv_filter.c:
+    Simo Piiroinen
+        - fixed include paths
+
+==============================================================================
+2006 week 35 (28.08. - 03.09.)
+==============================================================================
+
+calculator.c:
+    Simo Piiroinen
+        - fix: some diagnostics went to stdout instead of stderr
+
+csv_table.c:
+    Simo Piiroinen
+        - fixed also csvtext_compare to treat numbers < strings
+
+==============================================================================
+2006 week 33 (14.08. - 20.08.)
+==============================================================================
+
+sp_textconv.py:
+    Simo Piiroinen
+        - added html title control
+
+==============================================================================
+2006 week 26 (26.06. - 02.07.)
+==============================================================================
+
+sp_gen_manfile.py:
+    Simo Piiroinen
+        - escape also '\'' chars
+
+==============================================================================
+2006 week 22 (29.05. - 04.06.)
+==============================================================================
+
+csv_table.c:
+    Simo Piiroinen
+        - fixed incorrect return value for csv_save() and csv_save_as_html
+        - fixed: csv_save wrote some data to stdout
+
+sp_gen_manfile.py:
+    Simo Piiroinen
+        - transforms Capitalized sections to UPPERCASE
+
+csv_table.c csv_table.h:
+    Simo Piiroinen
+        - added csv_save_as_html()
+
+msg.c msg.h:
+    Simo Piiroinen
+        - added msg_perror()
+
+proc_maps.c proc_maps.h proc_meminfo.c proc_meminfo.h proc_meminfo.inc
+proc_status.c proc_status.h:
+    Simo Piiroinen
+        - moved from track2 source tree
+
+proc_maps.c proc_maps.h proc_stat.c proc_statm.c:
+    Simo Piiroinen
+        - modified to use libsysperf API
+
+proc_stat.c proc_stat.h proc_statm.c proc_statm.h:
+    Simo Piiroinen
+        - copied from track2 source tree
+
+==============================================================================
+2006 week 21 (22.05. - 28.05.)
+==============================================================================
+
+csv_table.c:
+    Simo Piiroinen
+        - filter operators imported from sp_csv_filter application
+
+prettyproto.py:
+    Simo Piiroinen
+        - documented
+
+sp_csv_filter.c:
+    Simo Piiroinen
+        - actual filtering code moved to libsysperf
+
+==============================================================================
+2006 week 20 (15.05. - 21.05.)
+==============================================================================
+
+csv_calc.c:
+    Simo Piiroinen
+        - csv api updates
+
+csv_table.c csv_table.h:
+    Simo Piiroinen
+        - new version
+
+==============================================================================
+2006 week 04 (23.01. - 29.01.)
+==============================================================================
+
+sp_gen_manfile.py:
+    Simo Piiroinen
+        - supressed double warnings due to missing/empty sections
+
+sp_textconv.py:
+    Simo Piiroinen
+        - added preprocessor and '::INC path' directive
+
+==============================================================================
+2006 week 01 (02.01. - 08.01.)
+==============================================================================
+
+sp_csv_filter.c:
+    Simo Piiroinen
+        - added 'origin' operator -> subtracts value on first row from column
+
+==============================================================================
+2005 week 40 (03.10. - 09.10.)
+==============================================================================
+
+csv_table.h reader.h str_pool.h:
+    Simo Piiroinen
+        - include file fixes
+
+==============================================================================
+2005 week 38 (19.09. - 25.09.)
+==============================================================================
+
+array.h:
+    Simo Piiroinen
+        - added array_size()
+
+csv_table.h:
+    Simo Piiroinen
+        - added csv_ncols, csv_nrows, ...
+
+==============================================================================
+2005 week 37 (12.09. - 18.09.)
+==============================================================================
+
+calculator.c:
+    Simo Piiroinen
+        - commented out dead code
+
+csv_calc.c csv_calc.h:
+    Simo Piiroinen
+        - initial version
+
+csv_table.c csv_table.h:
+    Simo Piiroinen
+        - added csv_rowcalc()
+
+==============================================================================
+2005 week 36 (05.09. - 11.09.)
+==============================================================================
+
+msg.c:
+    Simo Piiroinen
+        - defaults to verbosity >= warnings
+
+==============================================================================
+2005 week 29 (18.07. - 24.07.)
+==============================================================================
+
+csv_table.c:
+    Simo Piiroinen
+        - csv_usecols -> csv_usecols & csv_ordercols
+        - remcols shuffling removed from csv_newshuffle
+
+sp_textconv.py:
+    Simo Piiroinen
+        - added image & clickmap support
+
+csv_table.c csv_table.h sp_csv_filter.c:
+    Simo Piiroinen
+        - csv API cleanup
+
+==============================================================================
+2005 week 28 (11.07. - 17.07.)
+==============================================================================
+
+calculator.c:
+    Simo Piiroinen
+        - TESTMAIN supports string variables
+
+csv_table.c:
+    Simo Piiroinen
+        - csv_newshuffle supports 'remcols' shuffling
+
+csv_table.h:
+    Simo Piiroinen
+        - added missing prototypes
+
+sp_csv_filter.c:
+    Simo Piiroinen
+        - string values can be used in calculations
+
+==============================================================================
+2005 week 27 (04.07. - 10.07.)
+==============================================================================
+
+Makefile:
+    Simo Piiroinen
+        - scans python files too for changelog
+        - cleanup
+        - generates man files for binaries
+        - added: sp_fix_tool_vers
+        - added: sp_gen_manfile
+        - added: sp_textconv
+        - removed: sp_csv_filter
+        - exports: sp_gen_changelog
+        - debian/rules compatible install
+
+chk-unused.py:
+    Simo Piiroinen
+        - initial version
+
+release.h:
+    Simo Piiroinen
+        - release 0.0.3
+
+sp_csv_filter.c:
+    Simo Piiroinen
+        - default operation: one past last '_' in progname instead of skipping
+          initial "csv_" if present
+        - renamed: app_template.c -> sp_csv_filter.c
+
+sp_gen_changelog.py:
+    Simo Piiroinen
+        - command line parser added
+        - renamed: gen_changelog.py -> sp_gen_changelog.py
+
+sp_gen_manfile.py:
+    Simo Piiroinen
+        - incorrect .TH line fixed
+        - shuffled sections warning shows removed sections too
+        - overrides for: section, name, version, brief via -Dkey=val
+        - major cleanup
+        - copied from track2
+
+sp_fix_tool_vers.py sp_textconv.py:
+    Simo Piiroinen
+        - added command line parser
+
+==============================================================================
+2005 week 26 (27.06. - 03.07.)
+==============================================================================
+
+Makefile:
+    Simo Piiroinen
+        - added sp_csv_filter.c, calculator.c, array.c, str_array.c
+
+calculator.inc:
+    Simo Piiroinen
+        - '||' vs. '(' out priority fixed
+
+csv_table.c:
+    Simo Piiroinen
+        - csv_load() now ignores comment lines
+
+sp_csv_filter.c:
+    Simo Piiroinen
+        - added opearions: header, labels
+        - added options: --verbose, --quiet, --silent
+        - EXIT_FAILURE if load or save fails
+        - added opearions: calc, select, unique, usecols, order and reverse
+        - added options: --no-header, --no-labels, --data-only
+
+sp_textconv.py:
+    Simo Piiroinen
+        - imported to libsysperf
+
+array.c array.h calculator.c calculator.h calculator.inc str_array.c
+str_array.h:
+    Simo Piiroinen
+        - imported from track2
+
+csv_table.c csv_table.h:
+    Simo Piiroinen
+        - added sort, unique, reverse and column shuffle functionality
+        - it is now possible to trim headers, labels & separator lines
+          from csv output
+
+msg.c msg.h:
+    Simo Piiroinen
+        - added msg_setsilent()
+
+release.h sp_csv_filter.c:
+    Simo Piiroinen
+        - initial version
+
+str_pool.c str_pool.h:
+    Simo Piiroinen
+        - cleanup & comments
+
+==============================================================================
+2005 week 25 (20.06. - 26.06.)
+==============================================================================
+
+Makefile:
+    Simo Piiroinen
+        - added writer.c
+
+csv_table.c:
+    Simo Piiroinen
+        - rewrote csv_save()
+        - removed test main()
+
+csv_table.h:
+    Simo Piiroinen
+        - added include str_pool.h
+
+fake_csv_pass.c:
+    Simo Piiroinen
+        - added command line parsing & runtime help
+
+msg.h:
+    Simo Piiroinen
+        - now allows local override of MSG_DISABLE_XXX
+
+reader.c:
+    11:58:01
+        - line count was increased twice per row
+
+str_pool.h:
+    Simo Piiroinen
+        - added includes mem_pool.h & stdlib.h
+
+writer.c:
+    Simo Piiroinen
+        - structures & prototypes moved to writer.h
+
+Makefile argvec.c argvec.h csv_float.c csv_float.h csv_table.c csv_table.h
+fake_csv_pass.c fake_track.c hash.c hash.h mem_pool.c mem_pool.h msg.c msg.h
+reader.c reader.h str_pool.c str_pool.h str_split.c str_split.h writer.c
+writer.h:
+    Simo Piiroinen
+        - initial version
+
+csv_table.c csv_table.h:
+    Simo Piiroinen
+        - added csv_getlabel_ex()
+
+csv_table.c reader.c reader.h:
+    Simo Piiroinen
+        - added stream support
+
+==============================================================================
+2005 week 24 (13.06. - 19.06.)
+==============================================================================
+
+calculator.inc:
+    Simo Piiroinen
+        - can use OP_HIDE_SPECIAL to limit visibility of macros only
+          to normal operators
+
+sp_fix_tool_vers.py:
+    Simo Piiroinen
+        - now allows appending module seach path (for csvlib) using -L
+        - now allows overwriting existing files if different from source file
+
+sp_gen_changelog.py:
+    Simo Piiroinen
+        - week combining now sorts with week, not date
+        - almost complete rewrite
+        - combines identical change notes from multiple files
+
+sp_gen_manfile.py:
+    Simo Piiroinen
+        - rearranges sections
+        - added more sanity checks
+
+==============================================================================
+2005 week 16 (18.04. - 24.04.)
+==============================================================================
+
+sp_textconv.py:
+    Simo Piiroinen
+        - rewritten from scratch
+        - compatible with old markup.py
+
+==============================================================================
+2005 week 10 (07.03. - 13.03.)
+==============================================================================
+
+sp_fix_tool_vers.py:
+    Simo Piiroinen
+        - first version
+
+==============================================================================
+2005 week 02 (10.01. - 16.01.)
+==============================================================================
+
+calculator.c:
+    Simo Piiroinen
+        - debug messages now written to stderr
+
+calculator.c calculator.h:
+    Simo Piiroinen
+        - supports string variables too
+
+str_array.c str_array.h:
+    Simo Piiroinen
+        - added str_array_exclude
+
+==============================================================================
+2005 week 01 (03.01. - 09.01.)
+==============================================================================
+
+calculator.c:
+    Simo Piiroinen
+        - added '&&' and '||' operators
+        - string values allowed too
+        - string equality check supports 'str' == 'pat[,pat]...' lists
+
+calculator.inc:
+    Simo Piiroinen
+        - added '||' and '&&' operators
+        - fixed '+' & '-' priorities higher than equality tests
+
+==============================================================================
+2004 week 50 (13.12. - 19.12.)
+==============================================================================
+
+proc_meminfo.c:
+    Simo Piiroinen
+        - proc_meminfo_parse now zeroes struct before parsing new values
+
+sp_gen_manfile.py:
+    Simo Piiroinen
+        - exclicit application & manfile paths must be given
+        - directory component for manfile is automatically created
+
+proc_status.c proc_status.h:
+    Simo Piiroinen
+        - added Name, Pid and PPid parsing
+
+==============================================================================
+2004 week 49 (06.12. - 12.12.)
+==============================================================================
+
+sp_gen_manfile.py:
+    Simo Piiroinen
+        - output to 'app.1' instead of 'app.py.1'
+        - some comments added
+        - removed some debug stuff
+
+==============================================================================
+2004 week 47 (22.11. - 28.11.)
+==============================================================================
+
+calculator.c:
+    Simo Piiroinen
+        - now allows underscores in symbols
+
+==============================================================================
+2004 week 44 (01.11. - 07.11.)
+==============================================================================
+
+sp_gen_changelog.py:
+    Simo Piiroinen
+        - entries now grouped by week & file -> more compact listing
+
+sp_gen_manfile.py:
+    Simo Piiroinen
+        - python scripts (*.py) executed with python, not default
+          shabang app (to avoid running arm python in sbox)
+
+==============================================================================
+2004 week 43 (25.10. - 31.10.)
+==============================================================================
+
+sp_gen_manfile.py:
+    Simo Piiroinen
+        - first version
+
+==============================================================================
+2004 week 38 (20.09. - 26.09.)
+==============================================================================
+
+sp_gen_changelog.py:
+    Simo Piiroinen
+        - now sorted latest first
+
+==============================================================================
+2004 week 34 (23.08. - 29.08.)
+==============================================================================
+
+calculator.c calculator.h calculator.inc:
+    Simo Piiroinen
+        - first version
+
+==============================================================================
+2004 week 33 (16.08. - 22.08.)
+==============================================================================
+
+array.h:
+    Simo Piiroinen
+        - added array_empty() method
+
+sp_gen_changelog.py:
+    Simo Piiroinen
+        - first version
+
+==============================================================================
+2001 week 15 (09.04. - 15.04.)
+==============================================================================
+
+xmalloc.c xmalloc.h:
+    Simo Piiroinen
+        - initial version

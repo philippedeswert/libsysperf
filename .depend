@@ -1,0 +1,33 @@
+argvec.o: argvec.c msg.h argvec.h
+array.o: array.c array.h xmalloc.h
+calculator.o: calculator.c calculator.h csv_table.h array.h xmalloc.h \
+  cstring.h calculator.inc
+calculator-old.o: calculator-old.c calculator.h csv_table.h array.h \
+  xmalloc.h cstring.h calculator.inc
+cstring.o: cstring.c cstring.h xmalloc.h
+csv_calc.o: csv_calc.c csv_calc.h csv_table.h array.h xmalloc.h cstring.h \
+  calculator.h calculator.inc
+csv_float.o: csv_float.c msg.h csv_float.h
+csv_table.o: csv_table.c msg.h calculator.h csv_table.h array.h xmalloc.h \
+  cstring.h calculator.inc csv_float.h
+fake_csv_pass.o: fake_csv_pass.c msg.h argvec.h csv_table.h array.h \
+  xmalloc.h cstring.h
+fake_track.o: fake_track.c msg.h argvec.h
+hash.o: hash.c hash.h
+mem_pool.o: mem_pool.c msg.h mem_pool.h
+msg.o: msg.c msg.h
+proc_maps.o: proc_maps.c xmalloc.h cstring.h proc_maps.h array.h
+proc_meminfo.o: proc_meminfo.c cstring.h xmalloc.h proc_meminfo.h \
+  proc_meminfo.inc
+proc_stat.o: proc_stat.c xmalloc.h cstring.h proc_stat.h
+proc_statm.o: proc_statm.c xmalloc.h cstring.h proc_statm.h
+proc_status.o: proc_status.c cstring.h xmalloc.h proc_status.h
+reader.o: reader.c msg.h reader.h
+sp_csv_filter.o: sp_csv_filter.c msg.h argvec.h csv_table.h array.h \
+  xmalloc.h cstring.h str_array.h release.h
+str_array.o: str_array.c str_array.h array.h xmalloc.h cstring.h
+str_pool.o: str_pool.c msg.h mem_pool.h str_pool.h
+str_split.o: str_split.c str_split.h
+testmain.o: testmain.c csv_table.h array.h xmalloc.h cstring.h msg.h
+writer.o: writer.c msg.h writer.h
+xmalloc.o: xmalloc.c xmalloc.h

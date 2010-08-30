@@ -1,0 +1,91 @@
+libsysperf (0.1.4) unstable; urgency=low
+
+  * Use libc double conversion function, the ones in cvs_float.c
+    break with Glibc 2.5 for some reason
+  * Fixes: NB#69398
+
+ -- Eero Tamminen <eero.tamminen@nokia.com>  Thu, 13 Sep 2007 09:35:00 +0300
+
+libsysperf (0.1.3) unstable; urgency=low
+
+  * Applied some updates to contact information. Fixes: NB#64567
+
+ -- Eero Tamminen <eero.tamminen@nokia.com>  Wed, 29 Aug 2007 16:18:41 +0300
+
+libsysperf (0.1.2) unstable; urgency=low
+
+  * Checked/fixed missing licencing information
+  * Fixes: NB#64567
+
+ -- Eero Tamminen <eero.tamminen@nokia.com>  Tue, 31 Jul 2007 17:42:08 +0300
+
+libsysperf (0.1.1) unstable; urgency=low
+
+  * fix: csv_load sets input source name
+  * sp_fix_tool_vers: now checks release.h vs. debian/changelog
+  * bugfix: csv output float normalization fixed
+
+ -- Eero Tamminen <eero.tamminen@nokia.com>  Thu, 18 Jan 2007 16:17:59 +0200
+
+libsysperf (0.1.0) unstable; urgency=low
+
+  * csv api modified
+  * csv calculator:
+    - supports c-style: <expr>?<expr>:<expr>
+    - supports conditional: <if-expr>#<then-expr>
+    - short-cut evaluation for '&&' and '||'
+  * /proc parsers moved to libsysperf
+
+ -- Eero Tamminen <eero.tamminen@nokia.com>  Wed,  4 Oct 2006 12:48:14 +0300
+
+libsysperf (0.0.8) unstable; urgency=low
+
+  * sp_textconv: now supports include via '::INC path'
+  * sp_gen_manfile: fixed double warning issues with section shuffling
+
+ -- Eero Tamminen <eero.tamminen@nokia.com>  Thu, 26 Jan 2006 08:15:05 +0200
+
+libsysperf (0.0.7) unstable; urgency=low
+
+  * new query methods for csv_t and array_t
+
+ -- Eero Tamminen <eero.tamminen@nokia.com>  Thu, 22 Sep 2005 17:38:45 +0300
+
+libsysperf (0.0.6) unstable; urgency=low
+
+  * csv_rowcalc method added for csv_t objects
+
+ -- Eero Tamminen <eero.tamminen@nokia.com>  Wed, 14 Sep 2005 10:33:27 +0300
+
+libsysperf (0.0.5) unstable; urgency=low
+
+  * msg api defaults to verbosity >= warnings
+
+ -- Eero Tamminen <eero.tamminen@nokia.com>  Fri,  9 Sep 2005 13:28:39 +0300
+
+libsysperf (0.0.4) unstable; urgency=low
+
+  * csv api cleaned up
+
+ -- Eero Tamminen <eero.tamminen@nokia.com>  Fri, 22 Jul 2005 14:49:36 +0300
+
+libsysperf (0.0.3) unstable; urgency=low
+
+  * generates man files for binaries
+  * added: sp_fix_tool_vers
+  * added: sp_gen_manfile
+  * added: sp_textconv
+
+ -- Eero Tamminen <eero.tamminen@nokia.com>  Thu,  7 Jul 2005 09:08:30 +0300
+
+libsysperf (0.0.2) unstable; urgency=low
+
+  * Added: sp_gen_changelog
+
+ -- Eero Tamminen <eero.tamminen@nokia.com>  Tue,  5 Jul 2005 10:54:25 +0300
+
+libsysperf (0.0.1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Eero Tamminen <eero.tamminen@nokia.com>  Tue,  5 Jul 2005 09:42:22 +0300
