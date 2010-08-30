@@ -3,7 +3,7 @@ Section: devel
 Priority: optional
 Maintainer: Eero Tamminen <eero.tamminen@nokia.com>
 Build-Depends: debhelper (>= 4.1.0), python
-Standards-Version: 3.6.1
+Standards-Version: 3.8.0
 
 Package: libsysperf-dev
 Section: libdevel
