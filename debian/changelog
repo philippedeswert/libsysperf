@@ -1,3 +1,10 @@
+libsysperf (0.2.2) unstable; urgency=low
+
+  * Rebuild for Harmattan and relax version missmatcg check.
+    Fixes: NB#153055 NB#151528
+
+ -- Kiryl Shutsemau <kiryl.shutsemau@nokia.com>  Wed, 13 Jan 2010 13:01:28 +0200
+
 libsysperf (0.2.1) unstable; urgency=low
 
   * Various issues reported by Coverity have been fixed. Fixes:

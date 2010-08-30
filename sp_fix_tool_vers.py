@@ -182,6 +182,7 @@ def get_version_from_debian_changelog(path="debian/changelog"):
         t = open(path).readline()
         t = t.split("(",1)[1]
         t = t.split(")",1)[0]
+	t = t.split("+",1)[0]
         return '"%s"' % t
     return ''
 
@@ -213,7 +214,7 @@ def get_tool_vers(incl):
     dver = get_version_from_debian_changelog()
 
     if dver and rver != dver:
-        msg_fatal("\n".join([
+        msg_error("\n".join([
         "version mismatch",
         "%s - debian/changelog" % dver,
         "%s - %s" % (rver, incl)]))
