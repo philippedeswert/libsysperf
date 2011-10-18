@@ -108,7 +108,6 @@ HEADERS +=\
 	argvec.h\
 	array.h\
 	calculator.h\
-	calculator.inc\
 	cstring.h\
 	csv_float.h\
 	csv_table.h\
@@ -124,7 +123,6 @@ HEADERS +=\
 	xmalloc.h\
 	proc_maps.h\
 	proc_meminfo.h\
-	proc_meminfo.inc\
 	proc_stat.h\
 	proc_statm.h\
 	proc_status.h
