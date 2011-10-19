@@ -4,7 +4,7 @@ Release: 1%{?dist}
 Summary: Helper utilities and API library for CSV file handling
 Group: Development/Tools
 License: GPLv2+
-URL: http://www.gitorious.org/+maemo-tools-developers/maemo-tools/xresponse
+URL: http://www.gitorious.org/+maemo-tools-developers/maemo-tools/libsysperf
 Source: %{name}_%{version}.tar.gz
 BuildRoot: {_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: python
