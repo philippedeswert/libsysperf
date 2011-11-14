@@ -71,24 +71,27 @@ MAN1   ?= $(PREFIX)/share/man/man1
 BUILD  ?= final
 
 CFLAGS  += -Wall
-CFLAGS  += -Werror
 CFLAGS  += -std=c99
 CFLAGS  += -D_GNU_SOURCE
 
-ifeq ($(BUILD),debug)
+# -g is needed also with optimized binaries...
 CFLAGS  += -g# -finstrument-functions
 LDFLAGS += -g
-endif
-
-ifeq ($(BUILD),gprof)
-CFLAGS  += -g -pg
-LDFLAGS += -g -pg
-CFLAGS  += -O0
-endif
 
 ifeq ($(BUILD),final)
-CFLAGS  += -O3
-LDFLAGS += -s
+CFLAGS  += -O2
+# ...and it's packaging which strips it away
+#LDFLAGS += -s
+else
+ifeq ($(BUILD),gprof)
+CFLAGS  += -pg
+LDFLAGS += -pg
+CFLAGS  += -O0
+else
+# developer builds can have -Werror
+CFLAGS  += -Werror
+CFLAGS  += -O2
+endif
 endif
 
 # -----------------------------------------------------------------------------
