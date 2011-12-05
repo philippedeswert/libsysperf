@@ -1,5 +1,5 @@
 Name: libsysperf
-Version: 0.2.2
+Version: 0.2.3
 Release: 1%{?dist}
 Summary: Helper utilities and API library for CSV file handling
 Group: Development/Tools
@@ -45,9 +45,13 @@ Group: Development/Tools
 
 
 %changelog
+* Mon Dec 5 2011 Eero Tamminen <eero.tamminen@nokia.com> 0.2.3
+  * Fixes to Makefile for building with new GCC version
+  * Fixes to changelog
+
 * Wed Jan 13 2010 Eero Tamminen <eero.tamminen@nokia.com> 0.2.2
-  * Rebuild for Harmattan and relax version missmatcg check.
-     NB#151528
+  * Relax version mismatch check.
+    NB#151528
 
 * Wed Mar 04 2009 Eero Tamminen <eero.tamminen@nokia.com> 0.2.1
   * Various issues reported by Coverity have been fixed. Fixes:
@@ -61,14 +65,12 @@ Group: Development/Tools
 * Thu Sep 13 2007 Eero Tamminen <eero.tamminen@nokia.com> 0.1.4
   * Use libc double conversion function, the ones in cvs_float.c
     break with Glibc 2.5 for some reason
-  * 
 
 * Wed Aug 29 2007 Eero Tamminen <eero.tamminen@nokia.com> 0.1.3
   * Applied some updates to contact information. 
 
 * Tue Jul 31 2007 Eero Tamminen <eero.tamminen@nokia.com> 0.1.2
   * Checked/fixed missing licencing information
-  * 
 
 * Thu Jan 18 2007 Eero Tamminen <eero.tamminen@nokia.com> 0.1.1
   * fix: csv_load sets input source name
