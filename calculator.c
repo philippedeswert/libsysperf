@@ -1180,25 +1180,19 @@ static int calc_syntax_tree(calc_t *self)
  * calc_evalsub  --  evaluate numerical value of token tree
  * ------------------------------------------------------------------------- */
 
+#define value(cell)		(cell->cc_number)
+#define istrue(cell)	(fabs(cell->cc_number) > EPSILON)
+
+#define a1() 			calc_evalsub(self, root->tok_arg1)
+#define a2() 			calc_evalsub(self, root->tok_arg2)
+#define b1()			istrue(a1())
+#define b2()			istrue(a2())
+#define v1()            value(a1())
+#define v2()            value(a2())
+
+
 static csvcell_t *calc_evalsub(calc_t *self, calctok_t *root)
 {
-  auto double value(const csvcell_t *cell)
-  {
-    return cell->cc_number;
-  }
-
-  auto int istrue(const csvcell_t *cell)
-  {
-    return fabs(cell->cc_number) > EPSILON;
-  }
-
-  auto csvcell_t *a1(void) { return calc_evalsub(self, root->tok_arg1); }
-  auto csvcell_t *a2(void) { return calc_evalsub(self, root->tok_arg2); }
-  auto int        b1(void) { return istrue(a1()); }
-  auto int        b2(void) { return istrue(a2()); }
-  auto double     v1(void) { return value(a1()); }
-  auto double     v2(void) { return value(a2()); }
-
   csvcell_t *res = &root->tok_val;
 
   ENTER
