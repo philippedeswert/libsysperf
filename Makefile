@@ -136,7 +136,7 @@ HEADERS +=\
 
 TARGETS = $(LIB_TARGETS) $(BIN_TARGETS) $(MAN_TARGETS)
 
-.PHONY: build clean mostlyclean distclean tags depend install changelog
+.PHONY: build clean mostlyclean distclean tags depend install changelog.old
 
 build:: $(TARGETS) $(HEADERS)
 
@@ -154,7 +154,11 @@ distclean:: clean
 tags::
 	ctags *.c *.h
 
-changelog::
+# changes are tracked in version control now, not in source file
+# comments, that's why this is named .old.  General overview of
+# possibly user visible changes is manually updated in the new
+# changelog file.
+changelog.old::
 	./sp_gen_changelog.py >$@ *.c *.h *.inc *.py Makefile
 
 .PHONY: tree

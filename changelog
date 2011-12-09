@@ -2,6 +2,8 @@ libsysperf (0.2.4), 9th Dec 2011:
   * Fix use of non-standard/non-safe GCC nested functions extension
     ("auto" keyword).
   * Fix sp_smaps_filter memory leak in kernel thread removal code.
+  * Rename the obsolete changelog auto-generated from source comments
+    to changelog.old as sources are now maintained in version control.
 
 libsysperf (0.2.2), 13 Jan 2010:
   * Relax version mismatch check.
