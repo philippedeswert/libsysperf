@@ -1456,103 +1456,158 @@ csv_label(const csv_t *self, int col)
   return csvrow_getstring(self->csv_labtab, col, 0,0);
 }
 
-/* ------------------------------------------------------------------------- *
- * csv_load
- * ------------------------------------------------------------------------- */
+/* - - - - - - - - - - - - - - - - - - - *
+ * CSV parser data
+ * - - - - - - - - - - - - - - - - - - - */
+typedef struct {
+  int error;
+  size_t size;
+  char *data;
+  FILE *file;
+  FILE *fnew;
+  int sep;
+  int cols;
+  char **col;
+  int *idx;
+  int cnt;
+  const char *path;
+} parser_t;
 
-int
-csv_load(csv_t *self, const char *path)
+
+/* - - - - - - - - - - - - - - - - - - - *
+ * initialize CSV parser data
+ * - - - - - - - - - - - - - - - - - - - */
+static void
+parser_init(parser_t *self)
 {
-  /* - - - - - - - - - - - - - - - - - - - *
-   * variables
-   * - - - - - - - - - - - - - - - - - - - */
+  self->error = 0;
+  self->size = 0x1000;
+  self->data = malloc(self->size);
+  if ( self->data == NULL ) abort();
+  self->file = 0;
+  self->fnew = 0;
+  self->sep = ',';
+  self->cols = 1;
+  self->col = 0;
+  self->idx = 0;
+  self->cnt = 0;
+  self->path = 0;
+}
 
-  int     error = -1;
-  size_t  size  = 0x1000;
-  char   *data  = malloc(size);
-  FILE   *file  = 0;
-  FILE   *fnew  = 0;
-  int     sep   = ',';
-  int     cols  = 1;
-  char  **col   = 0;
-  int    *idx   = 0;
-  int     cnt;
-
-  /* - - - - - - - - - - - - - - - - - - - *
-   * fetch line of input
-   * - - - - - - - - - - - - - - - - - - - */
-
-  auto int input(void)
+/* - - - - - - - - - - - - - - - - - - - *
+ * free resources allocated by CSV parser
+ * - - - - - - - - - - - - - - - - - - - */
+static void
+parser_free(parser_t *self)
+{
+  if ( self )
   {
-    for( ;; )
-    {
-      int n = getline(&data,&size,file);
-      if( n <= 0 )
-      {
-        return 1;
-      }
+    if( self->fnew != 0 ) fclose(self->fnew);
+    if ( self->data ) free(self->data);
+    if ( self->col ) free(self->col);
+    if ( self->idx ) free(self->idx);
 
-      if( *data == '#' ) continue;
-
-      if( n > 0 && data[n-1] == '\n' ) data[--n] = 0;
-      if( n > 0 && data[n-1] == '\r' ) data[--n] = 0;
-
-      //printf(">>%s<<\n", data);
-      return 0;
-    }
+    free(self);
   }
+}
 
-  /* - - - - - - - - - - - - - - - - - - - *
-   * slice line of input
-   * - - - - - - - - - - - - - - - - - - - */
-
-  auto void slice(void)
-  {
-    char *pos = data;
-    cnt = 0;
-    col[cnt++] = pos;
-
-    for( ;; )
-    {
-      switch( *pos )
-      {
-      case '\t': case ',': case ';':
-        if( *pos == sep )
-        {
-          *pos++ = 0, col[cnt] = pos;
-          if( cnt++ == cols )
-          {
-            goto at_eol;
-          }
-          break;
-        }
-      default:
-        ++pos;
-        break;
-
-      case 0x00: case '\r': case '\n':
-        goto at_eol;
-      }
-    }
-    at_eol:
-    ;
-  }
-
-  /* - - - - - - - - - - - - - - - - - - - *
-   * open file
-   * - - - - - - - - - - - - - - - - - - - */
+/* - - - - - - - - - - - - - - - - - - - *
+ * open CSV file
+ *
+ * This function creates, initializes
+ * parser data structure and opens input
+ * CSV file.
+ * - - - - - - - - - - - - - - - - - - - */
+static parser_t *
+parser_open(const char* path)
+{
+  parser_t *self = malloc(sizeof(parser_t));
+  if ( self == NULL ) abort();
+  parser_init(self);
 
   if( !path || !strcmp(path, "-") )
   {
-    file = stdin;
-    path = "<stdin>";
+    self->file = stdin;
+    self->path = "<stdin>";
   }
-  else if( (file = fnew = fopen(path, "r")) == 0 )
+  else
   {
-    perror(path); goto cleanup;
+    self->path = path;
+    self->file = self->fnew = fopen(path, "r");
   }
+  if ( !self->file )
+  {
+    self->error = -1;
+  }
+  return self;
+}
 
-  csv_setsource(self, path);
+/* - - - - - - - - - - - - - - - - - - - *
+ * fetch line of input
+ * - - - - - - - - - - - - - - - - - - - */
+static int
+parser_read(parser_t *self)
+{
+  for( ;; )
+  {
+    int n = getline(&self->data, &self->size, self->file);
+    if( n <= 0 )
+    {
+      return 1;
+    }
+
+    if( *self->data == '#' ) continue;
+
+    if( n > 0 && self->data[n-1] == '\n' ) self->data[--n] = 0;
+    if( n > 0 && self->data[n-1] == '\r' ) self->data[--n] = 0;
+
+    //printf(">>%s<<\n", data);
+    return 0;
+  }
+  return 0;
+}
+
+/* - - - - - - - - - - - - - - - - - - - *
+ * slice line of input
+ * - - - - - - - - - - - - - - - - - - - */
+
+static void
+parser_slice(parser_t *self)
+{
+  char *pos = self->data;
+  self->cnt = 0;
+  self->col[self->cnt++] = pos;
+
+  for( ;; )
+  {
+    switch( *pos )
+    {
+    case '\t': case ',': case ';':
+      if( *pos == self->sep )
+      {
+        *pos++ = 0, self->col[self->cnt] = pos;
+        if( self->cnt++ == self->cols ) return;
+        break;
+      }
+    default:
+      ++pos;
+      break;
+
+    case 0x00: case '\r': case '\n':
+      return;
+    }
+  }
+}
+
+
+/* - - - - - - - - - - - - - - - - - - - *
+ * parse the input data
+ * - - - - - - - - - - - - - - - - - - - */
+
+static void
+csv_parse(csv_t *self, parser_t *parser)
+{
+  csv_setsource(self, parser->path);
 
   /* - - - - - - - - - - - - - - - - - - - *
    * parse header
@@ -1560,73 +1615,73 @@ csv_load(csv_t *self, const char *path)
 
   for( ;; )
   {
-    if( input() )
+    if( parser_read(parser) )
     {
-      msg_warning("%s: EOF while reading CSV header\n", path);
-      goto at_eof;
+      msg_warning("%s: EOF while reading CSV header\n", parser->path);
+      return;
     }
 
-    if( *data == 0 )
+    if( *parser->data == 0 )
     {
-      if( input() )
+      if( parser_read(parser) )
       {
-        msg_warning("%s: EOF after reading CSV header\n", path);
-        goto at_eof;
+        msg_warning("%s: EOF after reading CSV header\n", parser->path);
+        return;
       }
       break;
     }
 
-    char *value = strchr(data, '=');
+    char *value = strchr(parser->data, '=');
 
     if( value == 0 )
     {
-      msg_warning("%s: missing CSV header terminator\n", path);
+      msg_warning("%s: missing CSV header terminator\n", parser->path);
       break;
     }
 
     *value++ = 0;
-    csv_addvar(self, cstring_strip(data), cstring_strip(value));
+    csv_addvar(self, cstring_strip(parser->data), cstring_strip(value));
   }
 
   /* - - - - - - - - - - - - - - - - - - - *
    * separator autodetect
    * - - - - - - - - - - - - - - - - - - - */
 
-  if( *data == 0 )
+  if( *parser->data == 0 )
   {
-    msg_warning("%s: empty CSV label row\n", path);
-    goto at_eof;
+    msg_warning("%s: empty CSV label row\n", parser->path);
+    return;
   }
 
   {
     int sem = 1;
     int tab = 1;
-    for( const char *s = data; *s; ++s )
+    for( const char *s = parser->data; *s; ++s )
     {
       switch( *s )
       {
-      case ',': ++cols;  break;
+      case ',': ++parser->cols;  break;
       case ';': ++sem;  break;
       case '\t': ++tab; break;
       }
     }
-    if( cols < sem ) cols = sem, sep = ';';
-    if( cols < tab ) cols = tab, sep = '\t';
+    if( parser->cols < sem ) parser->cols = sem, parser->sep = ';';
+    if( parser->cols < tab ) parser->cols = tab, parser->sep = '\t';
   }
 
-  col = calloc(cols+1, sizeof *col);
-  idx = calloc(cols+0, sizeof *idx);
+  parser->col = calloc(parser->cols+1, sizeof *parser->col);
+  parser->idx = calloc(parser->cols+0, sizeof *parser->idx);
 
   /* - - - - - - - - - - - - - - - - - - - *
    * handle label row
    * - - - - - - - - - - - - - - - - - - - */
 
-  slice();
+  parser_slice(parser);
 
-  for( int i = 0; i < cnt; ++i )
+  for( int i = 0; i < parser->cnt; ++i )
   {
-    idx[i] = csv_addcol(self, col[i]);
-    //printf("[%3d] '%s'\n", idx[i], col[i]);
+    parser->idx[i] = csv_addcol(self, parser->col[i]);
+    //printf("[%3d] '%s'\n", parser->idx[i], parser->col[i]);
   }
 
   /* - - - - - - - - - - - - - - - - - - - *
@@ -1635,25 +1690,25 @@ csv_load(csv_t *self, const char *path)
 
   for( ;; )
   {
-    if( input() )
+    if( parser_read(parser) )
     {
-      msg_warning("%s: missing CSV table terminator\n", path);
-      goto at_eof;
+      msg_warning("%s: missing CSV table terminator\n", parser->path);
+      return;
     }
 
-    if( *data == 0 )
+    if( *parser->data == 0 )
     {
       break;
     }
 
-    slice();
+    parser_slice(parser);
 
     csvrow_t *row = csv_newrow(self);
 
-    for( int i = 0; i < cnt; ++i )
+    for( int i = 0; i < parser->cnt; ++i )
     {
       double val;
-      const char *pos = col[i];
+      const char *pos = parser->col[i];
 
       switch( *pos )
       {
@@ -1661,13 +1716,13 @@ csv_load(csv_t *self, const char *path)
         val = csv_float_parse(&pos);
         if( *pos == 0 )
         {
-          csvrow_setnumber(row, idx[i], val);
+          csvrow_setnumber(row, parser->idx[i], val);
           break;
         }
         // fall through
 
       default:
-        csvrow_setstring(row, idx[i], col[i]);
+        csvrow_setstring(row, parser->idx[i], parser->col[i]);
         break;
       }
 
@@ -1675,98 +1730,149 @@ csv_load(csv_t *self, const char *path)
       //numeric += csvrow_isnumber(row, idx[i]);
     }
 
-    if( cnt != cols )
+    if( parser->cnt != parser->cols )
     {
-      msg_warning("%s: too %s columns\n", path,
-                  (cnt<cols) ? "few" : "much");
+      msg_warning("%s: too %s columns\n", parser->path,
+                  (parser->cnt < parser->cols) ? "few" : "much");
     }
   }
 
   /* - - - - - - - - - - - - - - - - - - - *
    * file parsed
    * - - - - - - - - - - - - - - - - - - - */
+}
 
-  at_eof:
+/* ------------------------------------------------------------------------- *
+ * csv_load
+ * ------------------------------------------------------------------------- */
+int
+csv_load(csv_t *self, const char *path)
+{
+  /* - - - - - - - - - - - - - - - - - - - *
+   * open file
+   * - - - - - - - - - - - - - - - - - - - */
+  parser_t *parser = parser_open(path);
 
-  error = 0;
+  if ( parser->error )
+  {
+    perror(path);
+  }
+  else
+  {
+    csv_parse(self, parser);
+  }
+  int rc = parser->error;
 
   /* - - - - - - - - - - - - - - - - - - - *
    * cleanup
    * - - - - - - - - - - - - - - - - - - - */
+  parser_free(parser);
 
-  cleanup:
-
-  if( fnew != 0 ) fclose(fnew);
-
-  free(data);
-  free(col);
-  free(idx);
-
-  return error;
+  return rc;
 }
 
 /* ------------------------------------------------------------------------- *
  * csv_save
  * ------------------------------------------------------------------------- */
 
-int
-csv_save(csv_t *self, const char *path)
+/* - - - - - - - - - - - - - - - - - - - *
+ * CSV writer data
+ * - - - - - - - - - - - - - - - - - - - */
+typedef struct {
+  int error;
+  FILE *file;
+  FILE *newf;
+  char *data;
+  int used;
+  int size;
+  const char *path;
+} writer_t;
+
+/* - - - - - - - - - - - - - - - - - - - *
+ * initialize CSV writer data
+ * - - - - - - - - - - - - - - - - - - - */
+static void
+writer_init(writer_t *self)
 {
-  enum { SIZE = 0x8000 };
+  self->size = 0x8000;
+  self->error = 0;
+  self->file = NULL;
+  self->newf = NULL;
+  self->data = malloc(self->size);
+  if (!self->data) abort();
+  self->used = 0;
+  self->path = NULL;
+}
 
-  int     error = -1;
-  FILE   *file  = NULL;
-  FILE   *newf  = NULL;
+/* - - - - - - - - - - - - - - - - - - - *
+ * free resources allocated by CSV writer
+ * - - - - - - - - - - - - - - - - - - - */
+static void
+writer_free(writer_t *self)
+{
+  if ( self->newf ) fclose(self->newf);
+  if ( self->data ) free(self->data);
 
-  char   *data  = malloc(SIZE);
-  int     used  = 0;
+  free(self);
+}
 
-  auto void flush(void)
+
+/* - - - - - - - - - - - - - - - - - - - *
+ * flush writer buffer to file
+ * - - - - - - - - - - - - - - - - - - - */
+static void
+writer_flush(writer_t *self)
+{
+  fwrite(self->data, 1, self->used, self->file);
+  self->used = 0;
+}
+
+/* - - - - - - - - - - - - - - - - - - - *
+ * store text into writer buffer
+ * - - - - - - - - - - - - - - - - - - - */
+static void
+writer_emit(writer_t *self, const char *str)
+{
+  while( *str )
   {
-    fwrite(data, 1, used, file);
-    used = 0;
+    if( self->used == self->size ) writer_flush(self);
+    self->data[self->used++] = *str++;
   }
+}
 
-  auto void emit(const char *str)
-  {
-    while( *str )
-    {
-      if( used == SIZE ) flush();
-      data[used++] = *str++;
-    }
-  }
-
-// QUARANTINE   auto void emitf(const char *fmt, ...)
-// QUARANTINE   {
-// QUARANTINE     char tmp[1024];
-// QUARANTINE     va_list va;
-// QUARANTINE     va_start(va, fmt);
-// QUARANTINE     vsnprintf(tmp, sizeof tmp, fmt, va);
-// QUARANTINE     va_end(va);
-// QUARANTINE     emit(tmp);
-// QUARANTINE   }
-
-  /* - - - - - - - - - - - - - - - - - - - *
-   * open output
-   * - - - - - - - - - - - - - - - - - - - */
+/* - - - - - - - - - - - - - - - - - - - *
+ * creates new CSV output file and
+ * initializes writer data
+ * - - - - - - - - - - - - - - - - - - - */
+static writer_t *
+writer_open(const char *path)
+{
+  writer_t *self = malloc(sizeof(writer_t));
+  if ( !self ) abort();
+  writer_init(self);
 
   if( path == NULL || !strcmp(path, "-") )
   {
-    file = stdout;
-    path = "<stdout>";
+    self->file = stdout;
+    self->path = "<stdout>";
   }
   else
   {
-    file = newf = fopen(path, "w");
+    self->file = self->newf = fopen(path, "w");
   }
-
-  csv_setsource(self, path);
-
-  if( file == NULL )
-  {
-    perror(path); goto cleanup;
+  if ( !self->file ) {
+    self->error = -1;
   }
+  return self;
+}
 
+/* - - - - - - - - - - - - - - - - - - - *
+ * writes data to CSV file
+ * - - - - - - - - - - - - - - - - - - - */
+static void
+csv_write(csv_t *self, writer_t *writer)
+{
+  csv_setsource(self, writer->path);
   /* - - - - - - - - - - - - - - - - - - - *
    * output header
    * - - - - - - - - - - - - - - - - - - - */
@@ -1776,12 +1882,12 @@ csv_save(csv_t *self, const char *path)
     for( int i=0, n=array_size(&self->csv_head); i < n; ++i )
     {
       csvvar_t *var = array_get(&self->csv_head, i);
-      emit(var->cv_key);
-      emit("=");
-      emit(var->cv_val);
-      emit("\n");
+      writer_emit(writer, var->cv_key);
+      writer_emit(writer, "=");
+      writer_emit(writer, var->cv_val);
+      writer_emit(writer, "\n");
     }
-    emit("\n");
+    writer_emit(writer, "\n");
   }
 
   /* - - - - - - - - - - - - - - - - - - - *
@@ -1798,19 +1904,19 @@ csv_save(csv_t *self, const char *path)
 
       if( c != 0 )
       {
-        emit(",");
+        writer_emit(writer, ",");
       }
       if( cell->cc_string )
       {
-        emit(cell->cc_string);
+        writer_emit(writer, cell->cc_string);
       }
       else
       {
         char t[32];
-        emit(csv_float_to_string(cell->cc_number, t, sizeof t));
+        writer_emit(writer, csv_float_to_string(cell->cc_number, t, sizeof t));
       }
     }
-    emit("\n");
+    writer_emit(writer, "\n");
   }
 
   /* - - - - - - - - - - - - - - - - - - - *
@@ -1827,48 +1933,70 @@ csv_save(csv_t *self, const char *path)
 
       if( c != 0 )
       {
-        emit(",");
+        writer_emit(writer, ",");
       }
       if( cell->cc_string )
       {
-        emit(cell->cc_string);
+        writer_emit(writer, cell->cc_string);
       }
       else
       {
         char t[32];
-        emit(csv_float_to_string(cell->cc_number, t, sizeof t));
+        writer_emit(writer, csv_float_to_string(cell->cc_number, t, sizeof t));
       }
     }
-    emit("\n");
+    writer_emit(writer, "\n");
   }
 
   if( !(self->csv_flags & CTF_NO_TERMINATOR) )
   {
-    emit("\n");
+    writer_emit(writer, "\n");
   }
 
-  flush();
+  writer_flush(writer);
 
-  if( ferror(file) )
+  if( ferror(writer->file) )
   {
-    perror(path); goto cleanup;
+    perror(writer->path);
+    return;
   }
+  writer->error = 0;
+}
 
-  error = 0;
+int
+csv_save(csv_t *self, const char *path)
+{
+
+
+// QUARANTINE   auto void emitf(const char *fmt, ...)
+// QUARANTINE   {
+// QUARANTINE     char tmp[1024];
+// QUARANTINE     va_list va;
+// QUARANTINE     va_start(va, fmt);
+// QUARANTINE     vsnprintf(tmp, sizeof tmp, fmt, va);
+// QUARANTINE     va_end(va);
+// QUARANTINE     emit(tmp);
+// QUARANTINE   }
 
   /* - - - - - - - - - - - - - - - - - - - *
-   * cleanup
+   * open output
    * - - - - - - - - - - - - - - - - - - - */
 
-  cleanup:
+  writer_t *writer = writer_open(path);
 
-  if( newf != NULL )
+  if( !writer )
   {
-    fclose(newf);
+    perror(path);
   }
-  free(data);
+  else
+  {
+    csv_write(self, writer);
+  }
 
-  return error;
+  int rc = writer->error;
+  writer_free(writer);
+
+  return rc;
 }
 
 /* ------------------------------------------------------------------------- *
@@ -2228,35 +2356,36 @@ csv_save(csv_t *self, const char *path)
 // QUARANTINE   return error;
 // QUARANTINE }
 // QUARANTINE
+
+
+/* - - - - - - - - - - - - - - - - - - - *
+ * csv_save_as_html emit functions
+ * - - - - - - - - - - - - - - - - - - - */
+static void
+csv_write_escaped(FILE *file, const char* text)
+{
+  while( text && *text )
+  {
+    int c = (unsigned char)*text++;
+    switch( c )
+    {
+    case '<': fputs("&lt;",  file); break;
+    case '>': fputs("&gt;",  file); break;
+    case '&': fputs("&gamp", file); break;
+    default: putc(c, file); break;
+    }
+  }
+}
+
 /* ------------------------------------------------------------------------- *
  * csv_save_as_html
  * ------------------------------------------------------------------------- */
-
 int
 csv_save_as_html(csv_t *self, const char *path)
 {
   int     error = -1;
   FILE   *file  = NULL;
   FILE   *newf  = NULL;
-
-  /* - - - - - - - - - - - - - - - - - - - *
-   * emit functions
-   * - - - - - - - - - - - - - - - - - - - */
-
-  auto void escape(const char *text)
-  {
-    while( text && *text )
-    {
-      int c = (unsigned char)*text++;
-      switch( c )
-      {
-      case '<': fputs("&lt;",  file); break;
-      case '>': fputs("&gt;",  file); break;
-      case '&': fputs("&gamp", file); break;
-      default: putc(c, file); break;
-      }
-    }
-  }
 
   /* - - - - - - - - - - - - - - - - - - - *
    * open output
@@ -2284,7 +2413,7 @@ csv_save_as_html(csv_t *self, const char *path)
    * - - - - - - - - - - - - - - - - - - - */
 
   fprintf(file, "<html>\n<head><title>");
-  escape(self->csv_source ?
+  csv_write_escaped(file, self->csv_source ?
          cstring_basename(self->csv_source) :
          "<unnamed csv data>");
   fprintf(file, "</title></head>\n<body>\n");
@@ -2300,9 +2429,9 @@ csv_save_as_html(csv_t *self, const char *path)
       {
         csvvar_t *var = array_get(&self->csv_head, i);
         fprintf(file, "<tr><th>");
-        escape(var->cv_key);
+        csv_write_escaped(file, var->cv_key);
         fprintf(file, "<td>");
-        escape(var->cv_val);
+        csv_write_escaped(file, var->cv_val);
         fprintf(file, "\n");
       }
       fprintf(file, "</table>\n<hr>\n");
@@ -2329,7 +2458,7 @@ csv_save_as_html(csv_t *self, const char *path)
       else
       {
         fprintf(file, "<th>");
-        escape(csvcell_getstring(cell,0,0));
+        csv_write_escaped(file, csvcell_getstring(cell,0,0));
         fprintf(file, "\n");
       }
     }
@@ -2354,7 +2483,7 @@ csv_save_as_html(csv_t *self, const char *path)
       else
       {
         fprintf(file, "<td>");
-        escape(csvcell_getstring(cell,0,0));
+        csv_write_escaped(file, csvcell_getstring(cell,0,0));
         fprintf(file, "\n");
       }
     }
@@ -2914,57 +3043,55 @@ csvord_delete(csvord_t *self)
 /* ------------------------------------------------------------------------- *
  * csvord_apply
  * ------------------------------------------------------------------------- */
+static void
+csvord_apply_dorow(csvord_t *self, csvrow_t *row)
+{
+  csvcell_t tmp[self->co_cols];
+  for( int c = 0; c < self->co_cols; ++c )
+  {
+    tmp[c] = row->cr_celltab[self->co_forw[c]];
+  }
+  for( int c = 0; c < self->co_cols; ++c )
+  {
+    row->cr_celltab[c] = tmp[c];
+  }
+  row->cr_cols = self->co_cols;
+}
 
 void
 csvord_apply(csvord_t *self, csv_t *csv)
 {
-  csvcell_t tmp[self->co_cols];
-
-  auto void dorow(csvrow_t *row)
-  {
-    for( int c = 0; c < self->co_cols; ++c )
-    {
-      tmp[c] = row->cr_celltab[self->co_forw[c]];
-    }
-    for( int c = 0; c < self->co_cols; ++c )
-    {
-      row->cr_celltab[c] = tmp[c];
-    }
-    row->cr_cols = self->co_cols;
-  }
-
-  dorow(csv->csv_labtab);
+  csvord_apply_dorow(self, csv->csv_labtab);
   for( int r = 0; r < csv->csv_rowcnt; ++r )
   {
-    dorow(csv->csv_rowtab[r]);
+    csvord_apply_dorow(self, csv->csv_rowtab[r]);
   }
 }
 
 /* ------------------------------------------------------------------------- *
  * csvord_unapply
  * ------------------------------------------------------------------------- */
+static void
+csvord_unapply_dorow(csvord_t *self, csvrow_t *row)
+{
+  csvcell_t tmp[self->co_cols];
+  for( int c = 0; c < self->co_cols; ++c )
+  {
+    tmp[c] = row->cr_celltab[self->co_back[c]];
+  }
+  for( int c = 0; c < self->co_cols; ++c )
+  {
+    row->cr_celltab[c] = tmp[c];
+  }
+  row->cr_cols = self->co_cols;
+}
 
 void
 csvord_unapply(csvord_t *self, csv_t *csv)
 {
-  csvcell_t tmp[self->co_cols];
-
-  auto void dorow(csvrow_t *row)
-  {
-    for( int c = 0; c < self->co_cols; ++c )
-    {
-      tmp[c] = row->cr_celltab[self->co_back[c]];
-    }
-    for( int c = 0; c < self->co_cols; ++c )
-    {
-      row->cr_celltab[c] = tmp[c];
-    }
-    row->cr_cols = self->co_cols;
-  }
-
-  dorow(csv->csv_labtab);
+  csvord_unapply_dorow(self, csv->csv_labtab);
   for( int r = 0; r < csv->csv_rowcnt; ++r )
   {
-    dorow(csv->csv_rowtab[r]);
+    csvord_unapply_dorow(self, csv->csv_rowtab[r]);
   }
 }
