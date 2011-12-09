@@ -1,11 +1,11 @@
 Name: libsysperf
 Version: 0.2.3
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Helper utilities and API library for CSV file handling
 Group: Development/Tools
 License: GPLv2+
 URL: http://www.gitorious.org/+maemo-tools-developers/maemo-tools/libsysperf
-Source: %{name}-%{version}.tar.gz
+Source: %{name}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-build
 BuildRequires: python
 
@@ -45,6 +45,9 @@ Group: Development/Tools
 
 
 %changelog
+* Mon Dec 9 2011 Eero Tamminen <eero.tamminen@nokia.com> 0.2.3-3
+  * OBS works best with tarballs that don't have version at all.
+
 * Mon Dec 7 2011 Eero Tamminen <eero.tamminen@nokia.com> 0.2.3-2
   * Some RPM tools expect {name}-{version}, not {name}_{version}
 
