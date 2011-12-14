@@ -57,7 +57,7 @@
 # Directory Config
 # -----------------------------------------------------------------------------
 NAME   ?= libsysperf
-ROOT   ?= /tmp/$(NAME)-testing
+DESTDIR?= /tmp/$(NAME)-testing
 PREFIX ?= /usr
 BIN    ?= $(PREFIX)/bin
 LIB    ?= $(PREFIX)/lib
@@ -163,7 +163,7 @@ changelog.old::
 
 .PHONY: tree
 tree :: install
-	tree $(ROOT)
+	tree $(DESTDIR)
 
 # -----------------------------------------------------------------------------
 # Compilation Macros & Rules
@@ -199,20 +199,20 @@ INSTALL_LIB = $(if $1, install -m644 $1 $2/)
 INSTALL_HDR = $(if $1, install -m644 $1 $2/)
 
 install-%-man::
-	$(call INSTALL_DIR,$^,$(ROOT)$(MAN1))
-	$(call INSTALL_MAN,$^,$(ROOT)$(MAN1))
+	$(call INSTALL_DIR,$^,$(DESTDIR)$(MAN1))
+	$(call INSTALL_MAN,$^,$(DESTDIR)$(MAN1))
 
 install-%-bin::
-	$(call INSTALL_DIR,$^,$(ROOT)$(BIN))
-	$(call INSTALL_BIN,$^,$(ROOT)$(BIN))
+	$(call INSTALL_DIR,$^,$(DESTDIR)$(BIN))
+	$(call INSTALL_BIN,$^,$(DESTDIR)$(BIN))
 
 install-%-lib::
-	$(call INSTALL_DIR,$^,$(ROOT)$(LIB))
-	$(call INSTALL_LIB,$^,$(ROOT)$(LIB))
+	$(call INSTALL_DIR,$^,$(DESTDIR)$(LIB))
+	$(call INSTALL_LIB,$^,$(DESTDIR)$(LIB))
 
 install-%-hdr::
-	$(call INSTALL_DIR,$^,$(ROOT)$(HDR))
-	$(call INSTALL_HDR,$^,$(ROOT)$(HDR))
+	$(call INSTALL_DIR,$^,$(DESTDIR)$(HDR))
+	$(call INSTALL_HDR,$^,$(DESTDIR)$(HDR))
 
 # -----------------------------------------------------------------------------
 # Development Package Installation
