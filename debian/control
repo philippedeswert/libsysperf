@@ -1,0 +1,15 @@
+Source: libsysperf
+Section: devel
+Priority: optional
+Maintainer: Eero Tamminen <eero.tamminen@nokia.com>
+Build-Depends: debhelper (>= 5.0.0), python
+Standards-Version: 3.8.0
+
+Package: libsysperf-dev
+Section: libdevel
+Architecture: any
+Depends: make, python, ${shlibs:Depends}
+Suggests: 
+Description: Helper utilities and API library for CSV file handling
+ API library and utilities for development of system performance tools
+ dealing with CSV files.
