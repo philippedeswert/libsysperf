@@ -182,7 +182,8 @@ def get_version_from_debian_changelog(path="debian/changelog"):
         t = open(path).readline()
         t = t.split("(",1)[1]
         t = t.split(")",1)[0]
-	t = t.split("+",1)[0]
+        t = t.split("+",1)[0]
+        t = t.split("-",1)[0]
         return '"%s"' % t
     return ''
 
