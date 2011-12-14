@@ -1,4 +1,4 @@
-libsysperf (0.2.4), 9th Dec 2011:
+libsysperf (0.2.4), 14 Dec 2011:
   * Fix use of non-standard/non-safe GCC nested functions extension
     ("auto" keyword).
   * Rename the obsolete changelog auto-generated from source comments
