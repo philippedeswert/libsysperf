@@ -5,7 +5,7 @@ Summary: Helper utilities and API library for CSV file handling
 Group: Development/Tools
 License: GPLv2+
 URL: http://www.gitorious.org/+maemo-tools-developers/maemo-tools/libsysperf
-Source: %{name}.tar.gz
+Source: %{name}_%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-build
 BuildRequires: python
 
@@ -40,6 +40,7 @@ Group: Development/Tools
 %{_bindir}/sp_*
 %{_libdir}/%{name}.a
 %{_mandir}/man1/*.1.gz
+%{_includedir}/%{name}/
 %{_includedir}/%{name}/*.h
 %doc COPYING 
 
